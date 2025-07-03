@@ -43,5 +43,46 @@ public.AddLocale("zh-CN", {
 	SaveStateLoaded = "已加载套装!",
 
 	ConsumableSelectorTitle = "物品选择器",
-	ConsumableSelectorDescription = "立即获得任意卡戎物品及地图物品。"
+	ConsumableSelectorDescription = "立即获得任意卡戎物品及地图物品。",
+
+
+
+	ExtraSelectorTitle = "额外修改内容",
+	ExtraSelectorDescription = "一些额外的作弊功能选项。包括无限Roll、必出混沌房间、永远出现英雄稀有度祝福等",
+
+	BoonSelectorExtraConfirmButton = "启用修改功能",
+	BoonSelectorExtraCancelButton = "取消修改功能",
+
+	ChaosGate = "混沌之门",
+	InfiniteRoll = "无限Roll",
+	Heroic = "必出英雄祝福",
+	NoRewardRoom = "不出现资源房间",
+
+	Extrarush = "冲刺次数+1",
+	MoreMoney = "金币+100",
+	RestoreHealth = "给我恢复",
+	RestoreMana = "给我充能",
+
+	DropLoot = "击杀概率掉落祝福",
+	StopDropLoot = "关闭击杀掉落祝福",
+	EphyraZoomOut = "房间奖励预览【无效】",
+
+	DiyTraitDataTitle = "自定义祝福",
+	DiyTraitDataDescription = "使用作者创建的自定义祝福、或者之前官方删除的祝福（这些祝福可能完全没有效果）",
+
+	BossHealthLoot = "Boss显示血量",
+	QuitAnywhere = "随时退出",
+	PermanentLocationCount = "始终显示房间数",
+
+	RepeatableChaosTrials = "混沌祝福可重复",
+
+	FreeToBuy = "0元购",
+	GetRavenFamiliar = "解锁鸦鸦魔宠",
+	GetFrogFamiliar = "解锁蛙蛙魔宠",
+	GetCatFamiliar = "解锁猫猫魔宠",
+	GetHoundFamiliar = "解锁狗狗魔宠",
+	GetPolecatFamiliar = "解锁鼬鼬魔宠",
+
+	AlwaysEncounterStoryRooms = "尽量遇到故事房间",
+	SlowEffectsOnTimer = "减速影响计时器",
 })

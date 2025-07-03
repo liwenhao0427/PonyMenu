@@ -43,5 +43,47 @@ public.AddLocale("zh-TW", {
 	SaveStateLoaded = "裝備加載了!",
 
 	ConsumableSelectorTitle = "耗材選擇器",
-	ConsumableSelectorDescription = "自己給您如何耗材。"
+	ConsumableSelectorDescription = "自己給您如何耗材。",
+
+
+
+	ExtraSelectorTitle = "額外修改內容",
+	ExtraSelectorDescription = "一些額外的作弊功能選項。包括無限Roll、必出混沌房間、永遠出現英雄稀有度祝福等",
+
+
+	BoonSelectorExtraConfirmButton = "啟用修改功能",
+	BoonSelectorExtraCancelButton = "取消修改功能",
+
+	ChaosGate = "混沌之門",
+	InfiniteRoll = "無限Roll",
+	Heroic = "必出英雄祝福",
+	NoRewardRoom = "不出現資源房間",
+
+	Extrarush = "衝刺次數+1",
+	MoreMoney = "金幣+100",
+	RestoreHealth = "給我恢復",
+	RestoreMana = "給我充能",
+
+	DropLoot = "擊殺概率掉落祝福",
+	StopDropLoot = "關閉擊殺掉落祝福",
+	EphyraZoomOut = "房間獎勳預覽",
+
+	DiyTraitDataTitle = "自訂祝福",
+	DiyTraitDataDescription = "使用作者創建的自訂祝福，或先前移除的官方祝福（這些祝福可能完全沒有作用）",
+
+	BossHealthLoot = "顯示Boss血量",
+	QuitAnywhere = "隨時退出",
+	PermanentLocationCount = "始終顯示房間數",
+	RepeatableChaosTrials = "混沌祝福可重複",
+
+	FreeToBuy = "0元购",
+
+	GetRavenFamiliar = "解鎖鴉鴉魔寵",
+	GetFrogFamiliar = "解鎖蛙蛙魔寵",
+	GetCatFamiliar = "解鎖貓貓魔寵",
+	GetHoundFamiliar = "解鎖狗狗魔寵",
+	GetPolecatFamiliar = "解鎖鼬鼬魔寵",
+
+	AlwaysEncounterStoryRooms = "盡量遇到故事房間",
+	SlowEffectsOnTimer = "減速影響計時器",
 })

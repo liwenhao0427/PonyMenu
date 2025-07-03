@@ -43,5 +43,46 @@ public.AddLocale("fr", {
 	SaveStateLoaded = "Kit équippé!",
 
 	ConsumableSelectorTitle = "Sélecteur de consommables.",
-	ConsumableSelectorDescription = "Donnez vous n'importe quel objet consommable."
+	ConsumableSelectorDescription = "Donnez vous n'importe quel objet consommable.",
+
+
+	ExtraSelectorTitle = "Modification supplémentaire",
+	ExtraSelectorDescription = "Quelques options supplémentaires de triche. Inclut la Roue infinie, la chambre du Chaos garantie, toujours des bénédictions héroïques rares, etc.",
+
+
+	BoonSelectorExtraConfirmButton = "Activer la modification",
+	BoonSelectorExtraCancelButton = "Annuler la modification",
+
+	ChaosGate = "Portail du Chaos",
+	InfiniteRoll = "Roulette infinie",
+	Heroic = "Bénédiction héroïque garantie",
+	NoRewardRoom = "Pas de salle de récompenses",
+
+	Extrarush = "Compteur de sprint +1",
+	MoreMoney = "Or +100",
+	RestoreHealth = "Restaurer la santé",
+	RestoreMana = "Restaurer la mana",
+
+	DropLoot = "Bénédiction tombant à la mort",
+	StopDropLoot = "Désactiver la bénédiction tombant à la mort",
+	EphyraZoomOut = "Aperçu des récompenses de la salle",
+
+	DiyTraitDataTitle = "Bénédiction personnalisée",
+	DiyTraitDataDescription = "Utilisez des bénédictions personnalisées créées par l'auteur, ou des bénédictions précédemment supprimées par les développeurs (ces bénédictions peuvent ne pas avoir d'effet du tout)",
+
+	BossHealthLoot = "Afficher la santé du boss",
+	QuitAnywhere = "Quitter à tout moment",
+	PermanentLocationCount = "Afficher toujours le nombre de pièces",
+
+	RepeatableChaosTrials = "Bénédictions du Chaos répétables",
+	FreeToBuy = "Gratuit à acheter",
+
+	GetRavenFamiliar = "Déverrouiller le familier corbeau",
+	GetFrogFamiliar = "Déverrouiller le familier grenouille",
+	GetCatFamiliar = "Déverrouiller le familier chat",
+	GetHoundFamiliar = "Déverrouiller le familier chien",
+	GetPolecatFamiliar = "Déverrouiller le familier putois",
+
+	AlwaysEncounterStoryRooms = "Toujours rencontrer des salles d'histoire",
+	SlowEffectsOnTimer = "Les effets de ralentissement affectent le minuteur",
 })

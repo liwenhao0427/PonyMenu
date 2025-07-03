@@ -43,6 +43,47 @@ public.AddLocale("en", {
 	SaveStateLoaded = "State loaded!",
 
 	ConsumableSelectorTitle = "Consumable Selector",
-	ConsumableSelectorDescription = "Give yourself any consumable item."
+	ConsumableSelectorDescription = "Give yourself any consumable item.",
+
+
+	ExtraSelectorTitle = "Extra Modification",
+	ExtraSelectorDescription = "Some additional cheat options. Includes Infinite Roll, guaranteed Chaos Room, always available Heroic Rare Blessings, etc.",
+
+
+	BoonSelectorExtraConfirmButton = "Enable Modification",
+	BoonSelectorExtraCancelButton = "Cancel Modification",
+
+	ChaosGate = "Chaos Gate",
+	InfiniteRoll = "Infinite Roll",
+	Heroic = "Guaranteed Heroic Blessing",
+	NoRewardRoom = "No Reward Rooms",
+
+	Extrarush = "Sprint Count +1",
+	MoreMoney = "Gold +100",
+	RestoreHealth = "Restore Health",
+	RestoreMana = "Restore Mana",
+
+	DropLoot = "Blessing Drop on Kill",
+	StopDropLoot = "Disable Blessing Drop on Kill",
+	EphyraZoomOut = "Room Reward Preview",
+
+	DiyTraitDataTitle = "Custom Blessing",
+	DiyTraitDataDescription = "Use custom blessings created by the author, or previously removed official blessings (these blessings may have no effect at all)",
+
+	BossHealthLoot = "Show Boss Health",
+	QuitAnywhere = "Quit Anytime",
+	PermanentLocationCount = "Always Show Room Count",
+
+	RepeatableChaosTrials = "Chaos Blessings Repeatable",
+	FreeToBuy = "Free to Buy",
+
+	GetRavenFamiliar = "Unlock Raven Familiar",
+	GetFrogFamiliar = "Unlock Frog Familiar",
+	GetCatFamiliar = "Unlock Cat Familiar",
+	GetHoundFamiliar = "Unlock Hound Familiar",
+	GetPolecatFamiliar = "Unlock Polecat Familiar",
+
+	AlwaysEncounterStoryRooms = "AlwaysEncounterStoryRooms",
+	SlowEffectsOnTimer = "Slow effects affect the timer",
 
 })

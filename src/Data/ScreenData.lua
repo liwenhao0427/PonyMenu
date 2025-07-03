@@ -1,5 +1,139 @@
+mod.Xsize = 0.7
+mod.Ysize = 0.6
+mod.TestIndexX = -1
+mod.TestIndexY = -1
+mod.Linex = 5  -- 每行的对象数量
+mod.Liney = 5  -- 总共的行数
+
+function mod.calPosX()
+	mod.TestIndexX = mod.TestIndexX + 1
+	return -mod.Xsize + (mod.TestIndexX % mod.Linex) * (mod.Xsize * 2 / (mod.Linex - 1))  -- 横坐标，按比例分布
+end
+
+function mod.calPosY()
+	mod.TestIndexY = mod.TestIndexY + 1
+	return -mod.Ysize + math.floor(mod.TestIndexY / mod.Linex) * (mod.Ysize * 2 / (mod.Liney - 1))  -- 纵坐标，按比例分布
+end
+
+function mod.genBtn(Name, OnPressedFunctionName)
+	return {
+		Name = "ButtonDefault",
+		Text = Name,
+		Group = "Combat_Menu_TraitTray",
+		Scale = 1.2,
+		ScaleX = 0.8,
+		OffsetX = ScreenCenterX * mod.calPosX(),
+		OffsetY = ScreenCenterY * mod.calPosY(),
+		TextArgs =
+		{
+			FontSize = 22,
+			Width = 720,
+			Color = Color.White,
+			Font = "P22UndergroundSCMedium",
+			ShadowBlur = 0,
+			ShadowColor = { 0, 0, 0, 1 },
+			ShadowOffset = { 0, 2 },
+			Justification = "Center"
+		},
+		Data = {
+			Key = Name,
+			OriText = Name,
+			OnPressedFunctionName = OnPressedFunctionName,
+		},
+	}
+end
+
 function mod.setupScreenData()
 	ModUtil.Table.Merge(ScreenData, {
+		-- 我的额外修改内容
+		ExtraSelector = {
+			Components = {},
+			OpenSound = "/SFX/Menu Sounds/HadesLocationTextAppear",
+			Name = "ExtraSelector",
+			RowStartX = -(ScreenCenterX * 0.65),
+			RowStartY = -(ScreenCenterY * 0.5),
+
+			ComponentData =
+			{
+				DefaultGroup = "Combat_Menu_TraitTray",
+				UseNativeScreenCenter = true,
+				Order = {
+					"BackgroundTint",
+					"Background"
+				},
+
+				BackgroundTint =
+				{
+					Graphic = "rectangle01",
+					GroupName = "Combat_Menu",
+					Scale = 10,
+					X = ScreenCenterX,
+					Y = ScreenCenterY,
+				},
+
+				Background =
+				{
+					AnimationName = "Box_FullScreen",
+					GroupName = "Combat_Menu",
+					X = ScreenCenterX,
+					Y = ScreenCenterY,
+					Scale = 1.15,
+					Text = "额外修改内容",
+					TextArgs =
+					{
+						FontSize = 32,
+						Width = 750,
+						OffsetY = -(ScreenCenterY * 0.825),
+						Color = Color.White,
+						Font = "P22UndergroundSCHeavy",
+						ShadowBlur = 0,
+						ShadowColor = { 0, 0, 0, 0 },
+						ShadowOffset = { 0, 3 },
+					},
+
+					Children =
+					{
+						ChaosGate = mod.genBtn("ChaosGate", mod.setChaosGate),
+						InfiniteRoll = mod.genBtn("InfiniteRoll", mod.setInfiniteRoll),
+						Heroic = mod.genBtn("Heroic", mod.setHeroic),
+						NoRewardRoom = mod.genBtn("NoRewardRoom", mod.setNoRewardRoom),
+						Extrarush = mod.genBtn("Extrarush", mod.setExtrarush),
+						MoreMoney = mod.genBtn("MoreMoney", mod.setMoreMoney),
+						RestoreHealth = mod.genBtn("RestoreHealth", mod.setRestoreHealth),
+						RestoreMana = mod.genBtn("RestoreMana", mod.setRestoreMana),
+						DropLoot = mod.genBtn("DropLoot", mod.setDropLoot),
+						StopDropLoot = mod.genBtn("StopDropLoot", mod.setStopDropLoot),
+						BossHealthLoot = mod.genBtn("BossHealthLoot", mod.BossHealthLoot),
+						QuitAnywhere = mod.genBtn("QuitAnywhere", mod.QuitAnywhere),
+						PermanentLocationCount = mod.genBtn("PermanentLocationCount", mod.PermanentLocationCount),
+						EphyraZoomOut = mod.genBtn("EphyraZoomOut", mod.setEphyraZoomOut),
+						RepeatableChaosTrials = mod.genBtn("RepeatableChaosTrials", mod.RepeatableChaosTrials),
+						FreeToBuy = mod.genBtn("FreeToBuy", mod.FreeToBuy),
+						GetRavenFamiliar = mod.genBtn("GetRavenFamiliar", mod.GetRavenFamiliar),
+						GetFrogFamiliar = mod.genBtn("GetFrogFamiliar", mod.GetFrogFamiliar),
+						GetCatFamiliar = mod.genBtn("GetCatFamiliar", mod.GetCatFamiliar),
+						GetHoundFamiliar = mod.genBtn("GetHoundFamiliar", mod.GetHoundFamiliar),
+						GetPolecatFamiliar = mod.genBtn("GetPolecatFamiliar", mod.GetPolecatFamiliar),
+						AlwaysEncounterStoryRooms = mod.genBtn("AlwaysEncounterStoryRooms", mod.AlwaysEncounterStoryRooms),
+						SlowEffectsOnTimer = mod.genBtn("SlowEffectsOnTimer", mod.SlowEffectsOnTimer),
+						CloseButton =
+						{
+							Graphic = "ButtonClose",
+							GroupName = "Combat_Menu_TraitTray",
+							Scale = 0.7,
+							OffsetX = 0,
+							OffsetY = ScreenCenterY - 70,
+							Data =
+							{
+								OnPressedFunctionName = "PonyMenu.CloseConsumableSelector",
+								ControlHotkeys = { "Cancel", },
+							},
+						},
+					}
+				},
+			}
+		},
+
 		BoonSelector = {
 			Components = {},
 			OpenSound = "/SFX/Menu Sounds/HadesLocationTextAppear",

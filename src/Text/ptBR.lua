@@ -43,6 +43,46 @@ public.AddLocale("pt-BR", {
 	SaveStateLoaded = "Seu salvamento anterior foi carregado!",
 
 	ConsumableSelectorTitle = "Seletor de Consumível",
-	ConsumableSelectorDescription = "Te dá qualquer item consumível."
+	ConsumableSelectorDescription = "Te dá qualquer item consumível.",
+
+
+
+
+	BoonSelectorExtraConfirmButton = "Ativar Modificação",
+	BoonSelectorExtraCancelButton = "Cancelar Modificação",
+
+	ChaosGate = "Portão do Caos",
+	InfiniteRoll = "Rolagem Infinita",
+	Heroic = "Bênção Heroica Garantida",
+	NoRewardRoom = "Sem Sala de Recompensas",
+
+	Extrarush = "Contagem de Corrida +1",
+	MoreMoney = "Ouro +100",
+	RestoreHealth = "Restaurar Saúde",
+	RestoreMana = "Restaurar Mana",
+
+	DropLoot = "Bênção de Morte ao Derrubar",
+	StopDropLoot = "Desativar Bênção de Morte ao Derrubar",
+	EphyraZoomOut = "Prévia de Recompensas da Sala",
+
+	DiyTraitDataTitle = "Bênção Personalizada",
+	DiyTraitDataDescription = "Use bênçãos personalizadas criadas pelo autor, ou bênçãos removidas oficialmente anteriormente (essas bênçãos podem não ter efeito algum)",
+
+	BossHealthLoot = "Exibir Vida do Boss",
+	QuitAnywhere = "Sair a Qualquer Momento",
+	PermanentLocationCount = "Exibir Sempre o Número de Salas",
+
+	RepeatableChaosTrials = "Bênçãos do Caos Repetíveis",
+
+	FreeToBuy = "Grátis para Comprar",
+
+	GetRavenFamiliar = "Desbloquear Familiar Corvo",
+	GetFrogFamiliar = "Desbloquear Familiar Sapo",
+	GetCatFamiliar = "Desbloquear Familiar Gato",
+	GetHoundFamiliar = "Desbloquear Familiar Cão",
+	GetPolecatFamiliar = "Desbloquear Familiar Doninha",
+
+	AlwaysEncounterStoryRooms = "Sempre encontrar salas de história",
+	SlowEffectsOnTimer = "Efeitos de lentidão afetam o cronômetro",
 
 })
