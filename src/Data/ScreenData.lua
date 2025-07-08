@@ -18,7 +18,7 @@ end
 function mod.genBtn(Name, OnPressedFunctionName)
 	return {
 		Name = "ButtonDefault",
-		Text = Name,
+		Text = mod.Locale[Name],
 		Group = "Combat_Menu_TraitTray",
 		Scale = 1.2,
 		ScaleX = 0.8,
@@ -37,8 +37,8 @@ function mod.genBtn(Name, OnPressedFunctionName)
 		},
 		Data = {
 			Key = Name,
-			OriText = Name,
-			OnPressedFunctionName = OnPressedFunctionName,
+			OriText = mod.Locale[Name],
+			OnPressedFunctionName = _PLUGIN.guid .. '.' .. OnPressedFunctionName,
 		},
 	}
 end
@@ -78,7 +78,7 @@ function mod.setupScreenData()
 					X = ScreenCenterX,
 					Y = ScreenCenterY,
 					Scale = 1.15,
-					Text = "额外修改内容",
+					Text = mod.Locale.ExtraSelectorTitle,
 					TextArgs =
 					{
 						FontSize = 32,
@@ -93,29 +93,29 @@ function mod.setupScreenData()
 
 					Children =
 					{
-						ChaosGate = mod.genBtn("ChaosGate", mod.setChaosGate),
-						InfiniteRoll = mod.genBtn("InfiniteRoll", mod.setInfiniteRoll),
-						Heroic = mod.genBtn("Heroic", mod.setHeroic),
-						NoRewardRoom = mod.genBtn("NoRewardRoom", mod.setNoRewardRoom),
-						Extrarush = mod.genBtn("Extrarush", mod.setExtrarush),
-						MoreMoney = mod.genBtn("MoreMoney", mod.setMoreMoney),
-						RestoreHealth = mod.genBtn("RestoreHealth", mod.setRestoreHealth),
-						RestoreMana = mod.genBtn("RestoreMana", mod.setRestoreMana),
-						DropLoot = mod.genBtn("DropLoot", mod.setDropLoot),
-						StopDropLoot = mod.genBtn("StopDropLoot", mod.setStopDropLoot),
-						BossHealthLoot = mod.genBtn("BossHealthLoot", mod.BossHealthLoot),
-						QuitAnywhere = mod.genBtn("QuitAnywhere", mod.QuitAnywhere),
-						PermanentLocationCount = mod.genBtn("PermanentLocationCount", mod.PermanentLocationCount),
-						EphyraZoomOut = mod.genBtn("EphyraZoomOut", mod.setEphyraZoomOut),
-						RepeatableChaosTrials = mod.genBtn("RepeatableChaosTrials", mod.RepeatableChaosTrials),
-						FreeToBuy = mod.genBtn("FreeToBuy", mod.FreeToBuy),
-						GetRavenFamiliar = mod.genBtn("GetRavenFamiliar", mod.GetRavenFamiliar),
-						GetFrogFamiliar = mod.genBtn("GetFrogFamiliar", mod.GetFrogFamiliar),
-						GetCatFamiliar = mod.genBtn("GetCatFamiliar", mod.GetCatFamiliar),
-						GetHoundFamiliar = mod.genBtn("GetHoundFamiliar", mod.GetHoundFamiliar),
-						GetPolecatFamiliar = mod.genBtn("GetPolecatFamiliar", mod.GetPolecatFamiliar),
-						AlwaysEncounterStoryRooms = mod.genBtn("AlwaysEncounterStoryRooms", mod.AlwaysEncounterStoryRooms),
-						SlowEffectsOnTimer = mod.genBtn("SlowEffectsOnTimer", mod.SlowEffectsOnTimer),
+						ChaosGate = mod.genBtn("ChaosGate", "setChaosGate"),
+						InfiniteRoll = mod.genBtn("InfiniteRoll", "setInfiniteRoll"),
+						Heroic = mod.genBtn("Heroic", "setHeroic"),
+						NoRewardRoom = mod.genBtn("NoRewardRoom", "setNoRewardRoom"),
+						Extrarush = mod.genBtn("Extrarush", "setExtrarush"),
+						MoreMoney = mod.genBtn("MoreMoney", "setMoreMoney"),
+						RestoreHealth = mod.genBtn("RestoreHealth", "setRestoreHealth"),
+						RestoreMana = mod.genBtn("RestoreMana", "setRestoreMana"),
+						DropLoot = mod.genBtn("DropLoot", "setDropLoot"),
+						StopDropLoot = mod.genBtn("StopDropLoot", "setStopDropLoot"),
+						BossHealthLoot = mod.genBtn("BossHealthLoot", "BossHealthLoot"),
+						QuitAnywhere = mod.genBtn("QuitAnywhere", "QuitAnywhere"),
+						PermanentLocationCount = mod.genBtn("PermanentLocationCount", "PermanentLocationCount"),
+						EphyraZoomOut = mod.genBtn("EphyraZoomOut", "setEphyraZoomOut"),
+						RepeatableChaosTrials = mod.genBtn("RepeatableChaosTrials", "RepeatableChaosTrials"),
+						FreeToBuy = mod.genBtn("FreeToBuy", "FreeToBuy"),
+						GetRavenFamiliar = mod.genBtn("GetRavenFamiliar", "GetRavenFamiliar"),
+						GetFrogFamiliar = mod.genBtn("GetFrogFamiliar", "GetFrogFamiliar"),
+						GetCatFamiliar = mod.genBtn("GetCatFamiliar", "GetCatFamiliar"),
+						GetHoundFamiliar = mod.genBtn("GetHoundFamiliar", "GetHoundFamiliar"),
+						GetPolecatFamiliar = mod.genBtn("GetPolecatFamiliar", "GetPolecatFamiliar"),
+						AlwaysEncounterStoryRooms = mod.genBtn("AlwaysEncounterStoryRooms", "AlwaysEncounterStoryRooms"),
+						SlowEffectsOnTimer = mod.genBtn("SlowEffectsOnTimer", "SlowEffectsOnTimer"),
 						CloseButton =
 						{
 							Graphic = "ButtonClose",
@@ -125,7 +125,7 @@ function mod.setupScreenData()
 							OffsetY = ScreenCenterY - 70,
 							Data =
 							{
-								OnPressedFunctionName = "PonyMenu.CloseConsumableSelector",
+								OnPressedFunctionName = _PLUGIN.guid .. '.' .. 'CloseConsumableSelector',
 								ControlHotkeys = { "Cancel", },
 							},
 						},
@@ -814,6 +814,30 @@ end
 
 function mod.setupCommandData()
 	mod.CommandData = {
+		{
+			IconPath = "GUI\\Screens\\BoonIcons\\ErisCurseTrait",
+			IconScale = 0.4,
+			Name = mod.Locale.ExtraSelectorTitle,
+			Description = mod.Locale.ExtraSelectorDescription,
+			Type = "Command",
+			Function = _PLUGIN.guid .. '.' .. "ExtraSelectorLoadPage"
+		},
+		{
+			Icon = "CharonPointsDrop",
+			IconScale = 0.6,
+			Name = mod.Locale.BoonManagerTitle,
+			Description = mod.Locale.BoonManagerDescription,
+			Type = "Command",
+			Function = "PonyMenu.OpenBoonManager"
+		},
+		{
+			IconPath = "GUI\\Screens\\BoonIcons\\Trait_SurfacePenalty",
+			IconScale = 0.4,
+			Name = "DiyTraitData",
+			Description = mod.Locale.DiyTraitDataDescription,
+			Type = "Boon",
+			NoSpawn = true
+		},
 		{
 			IconPath = "PonyWarrior-PonyMenu\\Zeus",
 			IconScale = 0.3,

@@ -41,6 +41,7 @@ local function setupMainData()
 	})
 
 	mod.BoonData = {
+		DiyTraitData = {},
 		ZeusUpgrade = {},
 		PoseidonUpgrade = {},
 		AphroditeUpgrade = {},
@@ -549,6 +550,11 @@ function mod.PopulateBoonData(upgradeName)
 				index = index + 1
 				mod.BoonData[upgradeName][index] = v
 			end
+		elseif upgradeName == "DiyTraitData" then
+			for k, v in pairs(DiyTraitData) do
+				index = index + 1
+				mod.BoonData[upgradeName][index] = v
+			end
 		end
 	end
 end
@@ -585,6 +591,8 @@ function mod.GetLootColor(upgradeName)
 		color = Color.AthenaVoice
 	elseif upgradeName == "NPC_Dionysus_01" then
 		color = Color.DionysusVoice
+	elseif upgradeName == "DiyTraitData" then
+		color = Color.ArachneVoice
 	end
 	return color
 end
