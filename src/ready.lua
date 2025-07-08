@@ -1,36 +1,6 @@
----@meta _
--- globals we define are private to our plugin!
----@diagnostic disable: lowercase-global
+local mod = PonyMenu
 
--- here is where your mod sets up all the things it will do.
--- this file will not be reloaded if it changes during gameplay
--- 	so you will most likely want to have it reference
---	values and functions later defined in `reload.lua`.
-
-mod = modutil.mod.Mod.Register(_PLUGIN.guid)
-
-mod.Locales = mod.Locales or {}
-
-data = {}
-
-local package = rom.path.combine(_PLUGIN.plugins_data_mod_folder_path, _PLUGIN.guid)
-modutil.mod.Path.Wrap("SetupMap", function(base) LoadPackages({ Name = package, })base()end)
-
-ModUtil.LoadOnce(function()
-	if not rom.game.GameState.PonyMenu then
-		rom.game.GameState.PonyMenu = { Data = {} }
-	end
-	data = rom.game.GameState.PonyMenu.Data
-end)
-
-function mod.GetLanguageString(path)
-	local locale = mod.Locales[GetLanguage()] or mod.Locales.en
-	return ModUtil.Path.Get(path, locale) or ModUtil.Path.Get(path, mod.Locales.en)
-end
-
-function public.AddLocale(lang, data)
-	mod.Locales[lang] = data
-end
+if not mod.Config.Enabled then return end
 
 local function setupMainData()
 	mod.CurrentLocale = GetLanguage()
@@ -66,9 +36,6 @@ local function setupMainData()
 		NPC_Athena_01 = {},
 		NPC_Dionysus_01 = {}
 	}
-
-	mod.HammerRarityUpgradeOrder = { "Common", "Legendary" }
-
 
 	mod.ConsumableData = {
 		-- "HealDrop",
@@ -307,7 +274,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 					else
 						SetColor({ Id = button.Id, Color = Color.Black })
 						button.MouseOverText = "InventoryScreen_GiftNotAvailable"
-					end				
+					end
 				elseif screen.Args.PlantTarget ~= nil then
 					SetColor({ Id = button.Id, Color = Color.Black })
 					button.MouseOverText = "InventoryScreen_SeedNotWanted"
@@ -357,7 +324,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 					columnNum = 1
 				end
 			end
-			
+
 		end
 	else
 		-- Pony Menu
@@ -562,7 +529,7 @@ end
 function mod.GetLootColor(upgradeName)
 	local godName = string.gsub(upgradeName, 'Upgrade', '')
 	local color = Color.Black
-	if config.ColorblindMode == true then
+	if mod.Config.ColorblindMode == true then
 		return color
 	end
 	if LootSetData[godName] ~= nil then
@@ -599,20 +566,21 @@ end
 
 function mod.GetLootColorFromTrait(traitName)
 	local color = Color.Red
-	if config.ColorblindMode == true then
-		return color
-	end
-	for upgradeName, boonData in pairs(mod.BoonData) do
-		if Contains(boonData, traitName) then
-			color = mod.GetLootColor(upgradeName)
-		end
-	end
 	return color
+	--if mod.Config.ColorblindMode == true then
+	--	return color
+	--end
+	--for upgradeName, boonData in pairs(mod.BoonData) do
+	--	if ArrayContains(boonData, traitName) then
+	--		color = mod.GetLootColor(upgradeName)
+	--	end
+	--end
+	--return color
 end
 
 function mod.RemoveAllTraits()
 	for i, traitData in pairs(CurrentRun.Hero.Traits) do
-		RemoveTrait(CurrentRun.Hero, traitData.Name)	
+		RemoveTrait(CurrentRun.Hero, traitData.Name)
 	end
 end
 
@@ -653,18 +621,18 @@ function mod.IsBoonTrait(traitName)
 		end
 	end
 end
-
-function CreateNewCustomRun(room)
+function mod.CreateNewCustomRun(room)
 	local prevRun = CurrentRun
 	local args = args or {}
+
 	SetupRunData()
 	ResetUI()
 
-	rom.game.CurrentRun = {}
+	--CurrentRun = {}
 	RunStateInit()
 
 	if args.RunOverrides ~= nil then
-		OverwriteTableKeys( CurrentRun, args.RunOverrides )
+		OverwriteTableKeys(CurrentRun, args.RunOverrides)
 	end
 
 	for name, value in pairs(GameState.ShrineUpgrades) do
@@ -673,12 +641,13 @@ function CreateNewCustomRun(room)
 
 	CurrentRun.ActiveBounty = args.ActiveBounty
 	CurrentRun.ForceNextEncounterData = args.Encounter
+
 	CurrentRun.Hero = CreateNewHero(prevRun, args)
 
 	if GameState.WorldUpgrades.WorldUpgradeUnusedWeaponBonus ~= nil then
 		if prevRun ~= nil and prevRun.BonusUnusedWeaponName ~= nil and CurrentRun.Hero.Weapons[prevRun.BonusUnusedWeaponName] then
-			if GameState.WorldUpgrades.UnusedWeaponBonusAddGems then
-				AddTrait(CurrentRun.Hero, "UnusedWeaponBonusTraitAddGems")
+			if GameState.WorldUpgrades.WorldUpgradeUnusedWeaponBonusT2 then
+				AddTrait(CurrentRun.Hero, "UnusedWeaponBonusTrait2")
 			else
 				AddTrait(CurrentRun.Hero, "UnusedWeaponBonusTrait")
 			end
@@ -688,22 +657,17 @@ function CreateNewCustomRun(room)
 	local bountyData = BountyData[args.ActiveBounty]
 	if bountyData ~= nil and bountyData.StartingTraits ~= nil then
 		LoadActiveBountyPackages()
-		for i, traitData in ipairs( bountyData.StartingTraits ) do
-			AddTrait( CurrentRun.Hero, traitData.Name, traitData.Rarity, { FromLoot = true })
+		for i, traitData in ipairs(bountyData.StartingTraits) do
+			AddTrait(CurrentRun.Hero, traitData.Name, traitData.Rarity, { FromLoot = true })
 		end
 	end
 
-	-- EquipKeepsake(CurrentRun.Hero, GameState.LastAwardTrait, { FromLoot = true, SkipNewTraitHighlight = true })
-	-- EquipAssist(CurrentRun.Hero, GameState.LastAssistTrait, { SkipNewTraitHighlight = true })
-	-- EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = GameState.EquippedFamiliar, SkipNewTraitHighlight = true })
-	-- EquipWeaponUpgrade(CurrentRun.Hero, { SkipNewTraitHighlight = true })
-	-- EquipMetaUpgrades(CurrentRun.Hero, { SkipNewTraitHighlight = true })
 	mod.LoadState(true)
 	UpdateRunHistoryCache(CurrentRun)
 
 	CurrentRun.BonusUnusedWeaponName = GetRandomUnequippedWeapon()
 	CurrentRun.ActiveBiomeTimer = GetNumShrineUpgrades("BiomeSpeedShrineUpgrade") > 0
-	CurrentRun.NumRerolls = GetTotalHeroTraitValue( "RerollCount" )
+	CurrentRun.NumRerolls = GetTotalHeroTraitValue("RerollCount")
 	CurrentRun.NumTalentPoints = GetTotalHeroTraitValue("TalentPointCount")
 	CurrentRun.ActiveBountyClears = GameState.PackagedBountyClears[CurrentRun.ActiveBounty] or 0
 	CurrentRun.ActiveBountyAttempts = GameState.PackagedBountyAttempts[CurrentRun.ActiveBounty] or 0
@@ -714,26 +678,17 @@ function CreateNewCustomRun(room)
 	end
 
 	InitHeroLastStands(CurrentRun.Hero)
-
 	InitializeRewardStores(CurrentRun)
-	--SelectBannedEliteAttributes( CurrentRun )
 
 	CurrentRun.CurrentRoom = CreateRoom(room, args)
-
-
-	-- if args.RoomName ~= nil then
-	-- 	CurrentRun.CurrentRoom = CreateRoom(RoomData[args.RoomName], args)
-	-- else
-	-- 	CurrentRun.CurrentRoom = ChooseStartingRoom(CurrentRun, args)
-	-- end
 
 	AddResource("Money", CalculateStartingMoney(), "RunStart")
 
 	return CurrentRun
 end
 
-function StartNewCustomRun(room)
-	--TODO hook player death by boss
+-- 直接进入指定房间 Boss战用
+function mod.StartNewCustomRun(room)
 	AddInputBlock({ Name = "StartOver" })
 
 	for index, familiarName in ipairs(FamiliarOrderData) do
@@ -746,12 +701,20 @@ function StartNewCustomRun(room)
 	end
 
 	local currentRun = CurrentRun
-	EndRun(currentRun)
+
+	CurrentRun.EndingRoomName = CurrentRun.CurrentRoom.Name
+	table.insert( GameState.RunHistory, CurrentRun )
+	GameState.CompletedRunsCache = TableLength( GameState.RunHistory )
+	CurrentRun.CurrentRoom = nil
+	PrevRun = CurrentRun
+	--CurrentRun = nil
+
 	CurrentHubRoom = nil
 	PreviousDeathAreaRoom = nil
 
 	HideCombatUI("StartOver")
-	currentRun = CreateNewCustomRun(room)
+
+	currentRun = mod.CreateNewCustomRun(room)
 	StopMusicianMusic({ Duration = 1.0 })
 	ResetObjectives()
 
@@ -760,18 +723,19 @@ function StartNewCustomRun(room)
 
 	AddTimerBlock(currentRun, "StartOver")
 
-	-- RequestSave({ StartNextMap = currentRun.CurrentRoom.Name, SaveName = "_Temp", DevSaveName = CreateDevSaveName(currentRun) })
 	ValidateCheckpoint({ Value = true })
 
-	UnblockCombatUI( "StartOver" )
+	UnblockCombatUI("StartOver")
 	WaitForSpeechFinished()
 	RemoveInputBlock({ Name = "StartOver" })
-	RemoveTimerBlock( currentRun, "StartOver" )
+	RemoveTimerBlock(currentRun, "StartOver")
+
 	AddInputBlock({ Name = "MapLoad" })
-	AddTimerBlock( CurrentRun, "MapLoad" )
+	AddTimerBlock(CurrentRun, "MapLoad")
 
 	LoadMap({ Name = currentRun.CurrentRoom.Name, ResetBinks = true })
 end
+
 
 function mod.KillPlayer()
 	CurrentRun.Hero.IsDead = false
@@ -783,7 +747,7 @@ function mod.SaveState()
 		local wp = GetEquippedWeapon()
 		local aspect = GameState.LastWeaponUpgradeName[wp]
 		local aspectLevel = GetWeaponUpgradeLevel(aspect)
-		data.SavedState = {
+		mod.Data.SavedState = {
 			Traits = {},
 			MetaUpgrades = {},
 			Weapon = wp,
@@ -791,24 +755,25 @@ function mod.SaveState()
 			Keepsake = GameState.LastAwardTrait,
 			Assist = GameState.LastAssistTrait,
 			Familiar = GameState.EquippedFamiliar,
-			Hex = nil
 		}
 		for i, traitData in pairs(CurrentRun.Hero.Traits) do
 			if
-				not traitData.MetaUpgrade
-				and traitData.Name ~= data.SavedState.Weapon
-				and traitData.Name ~= data.SavedState.Aspect.Name
-				and traitData.Name ~= data.SavedState.Keepsake
-				and traitData.Name ~= data.SavedState.Assist
-				and traitData.Name ~= data.SavedState.Familiar
+			not traitData.MetaUpgrade
+					and traitData.Name ~= mod.Data.SavedState.Weapon
+					and traitData.Name ~= mod.Data.SavedState.Aspect.Name
+					and traitData.Name ~= mod.Data.SavedState.Keepsake
+					and traitData.Name ~= mod.Data.SavedState.Assist
+					and traitData.Name ~= mod.Data.SavedState.Familiar
 			then
 				if traitData.Slot and traitData.Slot == "Spell" then
-					data.SavedState.Hex = traitData.Name
+					mod.Data.SavedState.Hex = traitData.Name
 				else
-					table.insert(data.SavedState.Traits, { Name = traitData.Name, Rarity = traitData.Rarity, StackNum = traitData.StackNum })
+					table.insert(mod.Data.SavedState.Traits, { Name = traitData.Name, Rarity = traitData.Rarity, StackNum = traitData.StackNum })
 				end
 			elseif traitData.MetaUpgrade then
-				table.insert(data.SavedState.MetaUpgrades, {
+
+
+				table.insert(mod.Data.SavedState.MetaUpgrades, {
 					TraitName = traitData.Name,
 					Rarity = traitData.Rarity,
 					CustomMultiplier = traitData.CustomMultiplier,
@@ -831,7 +796,7 @@ function mod.SaveState()
 end
 
 function mod.LoadState(newRun)
-	if data.SavedState ~= nil then
+	if mod.Data.SavedState ~= nil then
 		if newRun == nil then
 			mod.RemoveAllTraits()
 			ClearUpgrades()
@@ -840,26 +805,26 @@ function mod.LoadState(newRun)
 			RemoveLastStand(CurrentRun.Hero, "ReincarnationKeepsake")
 			CurrentRun.Hero.MaxLastStands = CurrentRun.Hero.MaxLastStands - 1
 		end
-		EquipPlayerWeapon(WeaponData[data.SavedState.Weapon], { LoadPackages = true })
-		if data.SavedState.Keepsake ~= nil then
-			EquipKeepsake(CurrentRun.Hero, data.SavedState.Keepsake, { FromLoot = true, SkipNewTraitHighlight = true })
+		EquipPlayerWeapon(WeaponData[mod.Data.SavedState.Weapon], { LoadPackages = true })
+		if mod.Data.SavedState.Keepsake ~= nil then
+			EquipKeepsake(CurrentRun.Hero, mod.Data.SavedState.Keepsake, { FromLoot = true, SkipNewTraitHighlight = true })
 		end
-		if data.SavedState.Assist ~= nil then
-			EquipAssist(CurrentRun.Hero, data.SavedState.Assist, { SkipNewTraitHighlight = true })
+		if mod.Data.SavedState.Assist ~= nil then
+			EquipAssist(CurrentRun.Hero, mod.Data.SavedState.Assist, { SkipNewTraitHighlight = true })
 		end
-		if data.SavedState.Familiar ~= nil then
-			EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = data.SavedState.Familiar, SkipNewTraitHighlight = true })
+		if mod.Data.SavedState.Familiar ~= nil then
+			EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = mod.Data.SavedState.Familiar, SkipNewTraitHighlight = true })
 		end
-		if data.SavedState.Aspect.Name ~= nil then
+		if mod.Data.SavedState.Aspect.Name ~= nil then
 			AddTraitToHero({
-				TraitName = data.SavedState.Aspect.Name,
-				Rarity = data.SavedState.Aspect.Rarity,
+				TraitName = mod.Data.SavedState.Aspect.Name,
+				Rarity = mod.Data.SavedState.Aspect.Rarity,
 				SkipNewTraitHighlight = true,
 				SkipQuestStatusCheck = true,
 				SkipActivatedTraitUpdate = true,
 			})
 		end
-		for _, traitData in pairs(data.SavedState.Traits) do
+		for _, traitData in pairs(mod.Data.SavedState.Traits) do
 			AddTraitToHero({
 				TraitData = GetProcessedTraitData({
 					Unit = CurrentRun.Hero,
@@ -872,17 +837,17 @@ function mod.LoadState(newRun)
 				SkipActivatedTraitUpdate = true,
 			})
 		end
-		if data.SavedState.Hex ~= nil then
+		if mod.Data.SavedState.Hex ~= nil then
 			AddTraitToHero({
-				TraitName = data.SavedState.Hex,
+				TraitName = mod.Data.SavedState.Hex,
 				SkipNewTraitHighlight = true,
 				SkipQuestStatusCheck = true,
 				SkipActivatedTraitUpdate = true,
 			})
-			-- CurrentRun.Hero.SlottedSpell = DeepCopyTable(SpellData[data.SavedState.Hex])
-			-- CurrentRun.Hero.SlottedSpell.Talents = DeepCopyTable(CreateTalentTree(SpellData[data.SavedState.Hex]))
+			-- CurrentRun.Hero.SlottedSpell = DeepCopyTable(SpellData[mod.Data.SavedState.Hex])
+			-- CurrentRun.Hero.SlottedSpell.Talents = DeepCopyTable(CreateTalentTree(SpellData[mod.Data.SavedState.Hex]))
 		end
-		for _, traitData in pairs(data.SavedState.MetaUpgrades) do
+		for _, traitData in pairs(mod.Data.SavedState.MetaUpgrades) do
 			AddTraitToHero({
 				SkipNewTraitHighlight = true,
 				SkipQuestStatusCheck = true,
@@ -926,6 +891,7 @@ function mod.PopulateConsumableData()
 	consumableData["RandomStoreItem"] = nil
 
 	for key, consumable in pairs(consumableData) do
+		consumable.key = key
 		if consumable.AddResources then
 			consumableData[key] = nil
 		else

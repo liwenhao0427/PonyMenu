@@ -7,11 +7,11 @@ Import Text/ptBR.lua
 Import Text/zh-CN.lua
 Import Text/zh-TW.lua
 
-Import core.lua
+Import ready.lua
+Import Scripts/CheatInfo.lua
 Import Scripts/MenuScripts.lua
 Import Scripts/CheatMenuScript.lua
 Import Data/ScreenData.lua
-
 
 To Scripts/ResourceData.lua
 Import Data/ResourceData.lua
