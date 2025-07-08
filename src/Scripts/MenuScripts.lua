@@ -1125,6 +1125,8 @@ function mod.BoonManagerChangePage(screen, button)
 		mod.BoonSelectorLoadPage(screen)
 	elseif button.Menu == "ConsumableSelector" then
 		mod.ConsumableSelectorLoadPage(screen)
+	elseif button.Menu == "ExtraSelector" then
+		mod.ExtraSelectorLoadPage(screen)
 	end
 end
 

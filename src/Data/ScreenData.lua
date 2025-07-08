@@ -78,7 +78,7 @@ function mod.setupScreenData()
 					X = ScreenCenterX,
 					Y = ScreenCenterY,
 					Scale = 1.15,
-					Text = "额外修改内容",
+					Text = mod.Locale.ExtraSelectorTitle,
 					TextArgs =
 					{
 						FontSize = 32,
@@ -814,6 +814,14 @@ end
 
 function mod.setupCommandData()
 	mod.CommandData = {
+		{
+			IconPath = "GUI\\Screens\\BoonIcons\\ErisCurseTrait",
+			IconScale = 0.4,
+			Name = mod.Locale.ExtraSelectorTitle,
+			Description = mod.Locale.ExtraSelectorDescription,
+			Type = "Command",
+			Function = "PonyMenu.ExtraSelectorLoadPage"
+		},
 		{
 			IconPath = "PonyWarrior-PonyMenu\\Zeus",
 			IconScale = 0.3,
