@@ -1,3 +1,7 @@
+local mod = PonyMenu
+
+if not mod.Config.Enabled then return end
+
 --#region BOON SELECTOR
 
 function mod.OpenBoonSelector(screen, button)
@@ -292,7 +296,7 @@ function mod.BoonSelectorLoadPage(screen)
 					text = upgradeData.CustomRarityName
 				end
 
-				color = Color["BoonPatch" .. rarity]
+				local color = Color["BoonPatch" .. rarity]
 				-- if upgradeData.CustomRarityColor then
 				-- 	color = upgradeData.CustomRarityColor
 				-- else
@@ -1487,6 +1491,7 @@ function mod.OpenBossSelector()
 	end
 
 	local screen = DeepCopyTable(ScreenData.BossSelector)
+	screen.SelectedGod = mod.Data.SelectedGod or "No God selected"
 	local components = screen.Components
 	local children = screen.ComponentData.Background.Children
 	HideCombatUI(screen.Name)
@@ -1498,7 +1503,7 @@ function mod.OpenBossSelector()
 
 	--Display
 
-	if data.SavedState then
+	if mod.Data.SavedState then
 		local index = 0
 		local rowOffset = 400
 		local columnOffset = 400
@@ -1586,7 +1591,7 @@ function mod.OpenBossSelector()
 end
 
 function mod.HandleBossSelection(screen, button)
-	if data.SavedState == nil then
+	if mod.Data.SavedState == nil then
 		return
 	end
 	local boss = button.Boss
@@ -1604,7 +1609,7 @@ function mod.HandleBossSelection(screen, button)
 	boss.Room.TimeChallengeSwitchSpawnChance = 0.0
 	boss.Room.WellShopSpawnChance = 0.0
 	boss.Room.SecretSpawnChance = 0.0
-	StartNewCustomRun(boss.Room)
+	mod.StartNewCustomRun(boss.Room)
 end
 
 function mod.CloseBossSelectScreen(screen)

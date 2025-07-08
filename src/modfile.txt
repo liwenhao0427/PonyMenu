@@ -4,8 +4,8 @@ Top Import init.lua
 Import Text/en.lua
 Import Text/fr.lua
 Import Text/ptBR.lua
-Import Text/zh-CN.lua
-Import Text/zh-TW.lua
+Import Text/zhCN.lua
+Import Text/zhTW.lua
 
 Import ready.lua
 Import Scripts/CheatInfo.lua

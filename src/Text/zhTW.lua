@@ -1,4 +1,8 @@
-public.AddLocale("zh-TW", {
+local mod = PonyMenu
+
+if not mod.Config.Enabled then return end
+
+mod.AddLocale("zh-TW", {
 	PonyMenuCategoryTitle = "小馬選單",
 
 	ClearAllBoons = "去除一切祝福",

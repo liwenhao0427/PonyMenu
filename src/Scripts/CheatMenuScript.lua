@@ -1,3 +1,7 @@
+local mod = PonyMenu
+
+if not mod.Config.Enabled then return end
+
 
 mod.flags = { }
 
