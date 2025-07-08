@@ -1,0 +1,17 @@
+{
+  "namespace": "PonyWarrior",
+  "name": "PonyMenu",
+  "description": "Successor to Codex Menu. Lets you use different commands to test or cheat.",
+  "version_number": "0.11.0",
+  "dependencies": [
+    "SGG_Modding-DemonDaemon-1.0.0",
+    "Hell2Modding-Hell2Modding-1.0.28",
+    "SGG_Modding-ENVY-1.0.1",
+    "SGG_Modding-Chalk-2.0.2",
+    "SGG_Modding-ReLoad-1.0.1",
+    "SGG_Modding-SJSON-1.0.0",
+    "SGG_Modding-ModUtil-4.0.0"
+  ],
+  "website_url": "https://github.com/liwenhao0427/PonyMenu/tree/CheatMenu",
+  "FullName": "PonyWarrior-PonyMenu"
+}
