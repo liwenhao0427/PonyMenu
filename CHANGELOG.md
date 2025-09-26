@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.2] - 2025-09-26
+
+- Temporary fix for missing arrow buttons in all menus
+
+## [0.11.1] - 2025-08-14
+
+- Fixed boons with 'on acquiring' effects not triggering when obtained with the boon selector
+
 ## [0.11.0] - 2025-07-03
 
 ### Changed
@@ -179,7 +187,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First version of the mod!
 
-[unreleased]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.0...HEAD
+[unreleased]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.2...HEAD
+[0.11.2]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.1...0.11.2
+[0.11.1]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/PonyWarrior/PonyMenu/compare/0.10.14...0.11.0
 [0.10.14]: https://github.com/PonyWarrior/PonyMenu/compare/0.10.13...0.10.14
 [0.10.13]: https://github.com/PonyWarrior/PonyMenu/compare/0.10.12...0.10.13
