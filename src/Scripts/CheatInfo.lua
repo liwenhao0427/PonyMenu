@@ -208,6 +208,7 @@ function patchAttemptReroll( fun )
         local lastRoll = run.NumRerolls 
         fun(run, target)
         run.NumRerolls = lastRoll
+		local trait = GetHeroTrait("MetaToRunMetaUpgrade")
 		if trait and trait.MetaConversionUses then
 			trait.MetaConversionUses = 99
 		end 
@@ -279,16 +280,6 @@ function patchKill( fun )
         end
     end
 	return newFun
-end
-
-
-function debugShowText( text )
-    thread( InCombatText, CurrentRun.Hero.ObjectId, text, 0.8, { SkipShadow = true } )
-end
-
-
-function warningShowTest(text)
-    thread( InCombatTextArgs, { TargetId = CurrentRun.Hero.ObjectId, Text = text, Duration = 1.0, ShadowScaleX = 0.7 } )
 end
 
 

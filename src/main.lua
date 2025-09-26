@@ -54,6 +54,7 @@ local function on_ready()
 	import 'Data/ResourceData.lua'
 	import 'Data/ScreenData.lua'
 	import 'Scripts/MenuScripts.lua'
+	import 'Scripts/ModWrapFun.lua'
 	import 'Scripts/CheatInfo.lua'
 	import 'Scripts/CheatMenuScript.lua'
 end

@@ -69,33 +69,16 @@ end
 -- 设置必出混沌门
 function mod.setChaosGate(screen, button)
     mod.setFlagForButton(button)
-    if mod.flags[button.Key] then
-        IsSecretDoorEligible = patchIsSecretDoorEligible(IsSecretDoorEligible)
-    else
-        IsSecretDoorEligible = PreIsSecretDoorEligible
-    end
 end
 
 -- 必定出英雄稀有度祝福
 function mod.setHeroic(screen, button)
     mod.setFlagForButton(button)
-    if mod.flags[button.Key] then
-        SetTraitsOnLoot = patchSetTraitsOnLoot(SetTraitsOnLoot)
-        SetTransformingTraitsOnLoot = patchSetTransformingTraitsOnLoot(SetTransformingTraitsOnLoot)
-    else
-        SetTraitsOnLoot = PreSetTraitsOnLoot
-        SetTransformingTraitsOnLoot = PreSetTransformingTraitsOnLoot
-    end
 end
 
 -- 不再出现资源房间
 function mod.setNoRewardRoom(screen, button)
     mod.setFlagForButton(button)
-    if mod.flags[button.Key] then
-        ChooseRoomReward = patchChooseRoomReward(ChooseRoomReward)
-    else
-        ChooseRoomReward = PreChooseRoomReward
-    end
 end
 
 -- 设置无限掷骰
@@ -103,9 +86,6 @@ function mod.setInfiniteRoll(screen, button)
     mod.setFlagForButton(button)
     if mod.flags[button.Key] then
         infiniteRoll = true
-        AttemptReroll = patchAttemptReroll(AttemptReroll)
-        AttemptPanelReroll = patchAttemptPanelReroll(AttemptPanelReroll)
-        RunStateInit = patchBeforeEachRoom(RunStateInit)
         local trait = GetHeroTrait("MetaToRunMetaUpgrade")
         if trait and trait.MetaConversionUses then
             trait.MetaConversionUses = 99
@@ -113,8 +93,6 @@ function mod.setInfiniteRoll(screen, button)
         RerollCosts.Hammer = 1
     else
         infiniteRoll = false
-        AttemptReroll = PreAttemptReroll
-        AttemptPanelReroll = PreAttemptPanelReroll
         RerollCosts.Hammer = -1
         --RemoveTrait(CurrentRun.Hero, "DoorRerollMetaUpgrade")
         --RemoveTrait(CurrentRun.Hero, "PanelRerollMetaUpgrade")
@@ -301,14 +279,12 @@ function mod.setDropLoot(screen, button)
         metaupgradeDropBoonBoost = 0.1
     end
     warningShowTest('当前概率' .. metaupgradeDropBoonBoost*1000 .. '%')
-    KillEnemy = patchKill(KillEnemy)
 end
 
 -- 关闭击杀概率掉落祝福
 function mod.setStopDropLoot(screen, button)
     PlaySound({ Name = "/SFX/Menu Sounds/GeneralWhooshMENU" })
     metaupgradeDropBoonBoost = 0
-    KillEnemy = PreKillEnemy
 end
 
 -- Boss 显示血量
