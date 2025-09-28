@@ -828,19 +828,19 @@ function mod.ExtraSelectorLoadPage()
     HandleScreenInput(screen)
 end
 
-function mod.GiveConsumableToPlayer(screen, button)
-    DropMinorConsumable( button.Consumable.key )
-    -- MapState.RoomRequiredObjects = {}
-    -- 	if button.Consumable.UseFunctionName and button.Consumable.UseFunctionName == "OpenTalentScreen" then
-    --         DropMinorConsumable( button.Consumable.key )
-    -- --     	if not CurrentRun.ConsumableRecord["SpellDrop"] then
-    -- --             PlaySound({ Name = "/Leftovers/SFX/OutOfAmmo" })
-    -- -- 			return
-    -- -- 		end
-    -- -- 		mod.CloseConsumableSelector(screen)
-    -- 	end
-    -- 	UseConsumableItem(button.Consumable, {}, CurrentRun.Hero)
-end
+--function mod.GiveConsumableToPlayer(screen, button)
+--    DropMinorConsumable( button.Consumable.key )
+--    -- MapState.RoomRequiredObjects = {}
+--    -- 	if button.Consumable.UseFunctionName and button.Consumable.UseFunctionName == "OpenTalentScreen" then
+--    --         DropMinorConsumable( button.Consumable.key )
+--    -- --     	if not CurrentRun.ConsumableRecord["SpellDrop"] then
+--    -- --             PlaySound({ Name = "/Leftovers/SFX/OutOfAmmo" })
+--    -- -- 			return
+--    -- -- 		end
+--    -- -- 		mod.CloseConsumableSelector(screen)
+--    -- 	end
+--    -- 	UseConsumableItem(button.Consumable, {}, CurrentRun.Hero)
+--end
 
 
 EphyraZoomOutPre = nil
