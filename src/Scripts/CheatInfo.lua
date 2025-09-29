@@ -271,7 +271,7 @@ function patchKill( fun )
     function newFun(victim, triggerArgs)
         -- 父函数，照常执行
         fun(victim, triggerArgs)
-        local debugBoons = { "ZeusUpgrade", "HeraUpgrade", "PoseidonUpgrade", "ApolloUpgrade", "DemeterUpgrade", "AphroditeUpgrade", "HephaestusUpgrade", "HestiaUpgrade", "HermesUpgrade" }
+        local debugBoons = { "ZeusUpgrade", "HeraUpgrade", "PoseidonUpgrade", "ApolloUpgrade", "DemeterUpgrade", "AphroditeUpgrade", "HephaestusUpgrade", "HestiaUpgrade", "HermesUpgrade", "AresUpgrade" }
         if victim ~= CurrentRun.Hero and metaupgradeDropBoonBoost > 0 and EnemyData[victim.Name] ~= nil then
             if( RandomChance(metaupgradeDropBoonBoost) )  then
                 warningShowTest("击杀掉落祝福!")

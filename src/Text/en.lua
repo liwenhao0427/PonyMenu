@@ -87,4 +87,12 @@ public.AddLocale("en", {
 	AlwaysEncounterStoryRooms = "AlwaysEncounterStoryRooms",
 	SlowEffectsOnTimer = "Slow effects affect the timer",
 
+	RollChosen = "Roll doors for blessings in order",
+	ExpiringTimeThreshold = "Cooldown before removing Frozen effect",
+	StartWithWeaponUpgrade = "Start with Daedalus Hammer",
+	AlwaysArtemisCombat  = "Always meet Artemis in material rooms",
+	TorchNumAdd  = "Increase Torch Ω Special count",
+	TorchNumRestore  = "Restore Torch Ω Special count",
+	FasterLevelUp  = "Faster Keepsake leveling",
+
 })

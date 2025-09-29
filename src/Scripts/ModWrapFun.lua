@@ -47,6 +47,102 @@ ModUtil.Path.Wrap("AttemptPanelReroll", function(base, screen, button)
         base(screen, button)
     end
 end)
+
+-- RollChosen = "按顺序Roll门选祝福",
+ModUtil.Path.Wrap("AttemptRerollDoor", function(base, run, door)
+    if mod.flags["RollChosen"] then
+        local room = door.Room
+
+        local rewardsChosen = {}
+        if room.OriginalChosenRewardType == nil then
+            room.OriginalChosenRewardType = room.ChosenRewardType
+        end
+        if room.OriginalForceLootName == nil then
+            room.OriginalForceLootName = room.ForceLootName
+        end
+        table.insert( rewardsChosen, { RewardType = room.OriginalChosenRewardType, ForceLootName = room.OriginalForceLootName } )
+        for index, offeredDoor in pairs( MapState.OfferedExitDoors ) do
+            if offeredDoor.Room ~= nil then
+                table.insert( rewardsChosen, { RewardType = offeredDoor.Room.ChosenRewardType, ForceLootName = offeredDoor.Room.ForceLootName } )
+            end
+        end
+
+        -- Remove the existing reward
+        room.PrevForceLootName = room.ForceLootName
+        room.ForceLootName = nil
+        room.RewardOverrides = nil
+        if room.Encounter ~= nil then
+            if room.Encounter.LootAName ~= nil then
+                local animName = LootData[room.Encounter.LootAName].DoorIcon
+                Destroy({ Id = door.AdditionalIcons[animName] })
+                door.AdditionalIcons[animName] = nil
+                room.Encounter.LootAName = nil
+            end
+            if room.Encounter.LootBName ~= nil then
+                local animName = LootData[room.Encounter.LootBName].DoorIcon
+                Destroy({ Id = door.AdditionalIcons[animName] })
+                door.AdditionalIcons[animName] = nil
+                room.Encounter.LootBName = nil
+            end
+            room.Encounter = nil
+        end
+
+        local prevChosenRewardType = room.ChosenRewardType
+
+        run.CurrentRoom.DeferReward = false
+        room.ChosenRewardType = ChooseRoomReward( run, room, room.RewardStoreName, rewardsChosen, { IgnoreGameStateRequirements = false, } )
+
+        --region MOD开始
+        local myBoonList = {"ZeusUpgrade","HeraUpgrade", "PoseidonUpgrade", "DemeterUpgrade","ApolloUpgrade","AphroditeUpgrade","HephaestusUpgrade","HestiaUpgrade", "AresUpgrade"}
+        local myChosenRewardTypeList = { "WeaponUpgrade","HermesUpgrade","SpellDrop","TalentDrop","MaxHealthDrop","MaxManaDrop","RoomMoneyDrop","StackUpgrade"}
+
+        if(run.myRollIndex == nil) then run.myRollIndex = 0 end
+        if(run.myCurrentDoor == door) then
+            run.myRollIndex = run.myRollIndex +1
+        else
+            run.myCurrentDoor = door
+        end
+        local myLen = #myBoonList + # myChosenRewardTypeList;
+        local idx = run.myRollIndex % myLen + 1
+        if(idx <= #myBoonList) then
+            room.ChosenRewardType = "Boon"
+            room.ForceLootName = myBoonList[idx]
+        else
+            room.ChosenRewardType = myChosenRewardTypeList[idx - #myBoonList]
+        end
+        CurrentRun.NumRerolls = CurrentRun.NumRerolls + 1
+        --endregion
+
+        SetupRoomReward( run, room, rewardsChosen )
+        run.CurrentRoom.OfferedRewards[door.ObjectId] = { Type = room.ChosenRewardType, ForceLootName = room.ForceLootName, UseOptionalOverrides = room.UseOptionalOverrides }
+
+        if room.ChosenRewardType == "Devotion" and prevChosenRewardType ~= "Devotion" then
+            SetScale({ Ids = door.RewardPreviewIconIds, Fraction = 0.0, Duration = 0.1 })
+        else
+            SetScale({ Ids = door.RewardPreviewIconIds, Fraction = 1.0, Duration = 0.1 })
+        end
+
+        CreateDoorRewardPreview( door, nil, nil, nil, { ReUseIds = true } )
+
+        RefreshUseButton( door.ObjectId, door )
+    else
+        base(run, door)
+    end
+end)
+
+
+-- StartWithWeaponUpgrade = "必锤子开局",
+ModUtil.Path.Wrap("StartNewRun", function(base, prevRun, args)
+    if mod.flags["StartWithWeaponUpgrade"] then
+        local run = base(prevRun, args)
+        run.CurrentRoom.ChosenRewardType = "WeaponUpgrade"
+        return run
+    else
+        return base(screen, button)
+    end
+end)
+
+
 -- 每次进新房间之前触发
 mod._AddRerolled = false
 ModUtil.Path.Wrap("BeforeEachRoom", function(base)

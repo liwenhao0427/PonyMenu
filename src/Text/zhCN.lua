@@ -86,4 +86,12 @@ public.AddLocale("zh-CN", {
 
 	AlwaysEncounterStoryRooms = "尽量遇到故事房间",
 	SlowEffectsOnTimer = "减速影响计时器",
+
+	RollChosen = "按顺序Roll门选祝福",
+	ExpiringTimeThreshold = "移除冰封效果冷却时间",
+	StartWithWeaponUpgrade = "必锤子开局",
+	AlwaysArtemisCombat  = "材料房总是遇到阿尔特弥斯",
+	TorchNumAdd  = "火炬Ω特攻数量增加",
+	TorchNumRestore  = "火炬Ω特攻数量还原",
+	FasterLevelUp  = "信物快速升级",
 })

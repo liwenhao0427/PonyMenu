@@ -86,4 +86,12 @@ public.AddLocale("fr", {
 
 	AlwaysEncounterStoryRooms = "Toujours rencontrer des salles d'histoire",
 	SlowEffectsOnTimer = "Les effets de ralentissement affectent le minuteur",
+
+	RollChosen = "Lancer les portes pour les bénédictions dans l'ordre",
+	ExpiringTimeThreshold = "Temps de recharge avant suppression de l'effet Gelé",
+	StartWithWeaponUpgrade = "Commencer avec le marteau de Dédale",
+	AlwaysArtemisCombat  = "Toujours rencontrer Artémis dans les salles de matériaux",
+	TorchNumAdd  = "Augmenter le nombre d'attaques spéciales Ω de la Torche",
+	TorchNumRestore  = "Restaurer le nombre d'attaques spéciales Ω de la Torche",
+	FasterLevelUp  = "Amélioration rapide des souvenirs",
 })

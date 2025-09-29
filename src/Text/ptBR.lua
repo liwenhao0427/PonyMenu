@@ -86,4 +86,12 @@ public.AddLocale("pt-BR", {
 	AlwaysEncounterStoryRooms = "Sempre encontrar salas de história",
 	SlowEffectsOnTimer = "Efeitos de lentidão afetam o cronômetro",
 
+	RollChosen = "Rolar portas para bênçãos em ordem",
+	ExpiringTimeThreshold = "Tempo de recarga antes de remover o efeito Congelado",
+	StartWithWeaponUpgrade = "Começar com o Martelo de Dédalo",
+	AlwaysArtemisCombat  = "Sempre encontrar Ártemis nas salas de material",
+	TorchNumAdd  = "Aumentar o número de especiais Ω da Tocha",
+	TorchNumRestore  = "Restaurar o número de especiais Ω da Tocha",
+	FasterLevelUp  = "Aprimoramento rápido de lembranças",
+
 })

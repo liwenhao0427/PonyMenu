@@ -114,6 +114,13 @@ function mod.setupScreenData()
 						GetCatFamiliar = mod.genBtn("GetCatFamiliar", "GetCatFamiliar"),
 						GetHoundFamiliar = mod.genBtn("GetHoundFamiliar", "GetHoundFamiliar"),
 						GetPolecatFamiliar = mod.genBtn("GetPolecatFamiliar", "GetPolecatFamiliar"),
+						RollChosen = mod.genBtn("RollChosen", "RollChosen"),
+						ExpiringTimeThreshold = mod.genBtn("ExpiringTimeThreshold", "ExpiringTimeThreshold"),
+						StartWithWeaponUpgrade = mod.genBtn("StartWithWeaponUpgrade", "StartWithWeaponUpgrade"),
+						AlwaysArtemisCombat = mod.genBtn("AlwaysArtemisCombat", "AlwaysArtemisCombat"),
+						TorchNumAdd = mod.genBtn("TorchNumAdd", "TorchNumAdd"),
+						TorchNumRestore = mod.genBtn("TorchNumRestore", "TorchNumRestore"),
+						FasterLevelUp = mod.genBtn("FasterLevelUp", "FasterLevelUp"),
 						--AlwaysEncounterStoryRooms = mod.genBtn("AlwaysEncounterStoryRooms", "AlwaysEncounterStoryRooms"),
 						--SlowEffectsOnTimer = mod.genBtn("SlowEffectsOnTimer", "SlowEffectsOnTimer"),
 						CloseButton =
