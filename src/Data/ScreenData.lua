@@ -823,14 +823,6 @@ function mod.setupCommandData()
 			Function = _PLUGIN.guid .. '.' .. "ExtraSelectorLoadPage"
 		},
 		{
-			Icon = "CharonPointsDrop",
-			IconScale = 0.6,
-			Name = mod.Locale.BoonManagerTitle,
-			Description = mod.Locale.BoonManagerDescription,
-			Type = "Command",
-			Function = "PonyMenu.OpenBoonManager"
-		},
-		{
 			IconPath = "GUI\\Screens\\BoonIcons\\Trait_SurfacePenalty",
 			IconScale = 0.4,
 			Name = "DiyTraitData",
