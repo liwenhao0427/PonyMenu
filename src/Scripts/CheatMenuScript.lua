@@ -154,18 +154,11 @@ function mod.StartWithWeaponUpgrade(screen, button)
     mod.setFlagForButton(button)
 end
 
-function mod.AlwaysArtemisCombat(screen, button)
-    mod.setFlagForButton(button)
-    if mod.flags[button.Key] then
-        EncounterData.BaseArtemisCombat.AlwaysForce = true;
-        EncounterData.BaseArtemisCombat.GameStateRequirements = {
-            {
-                PathTrue = { "GameState", "EncountersCompletedCache", "ArtemisCombatIntro" },
-            };
-        }
-    else
-        EncounterData.BaseArtemisCombat.AlwaysForce = false;
-        EncounterData.BaseArtemisCombat.GameStateRequirements = {
+-- NPC 配置表，包含每个 NPC 的默认 GameStateRequirements
+local NPCConfig = {
+    Artemis = {
+        BaseEncounter = "BaseArtemisCombat",
+        DefaultGameStateRequirements = {
             {
                 PathTrue = { "GameState", "EncountersCompletedCache", "ArtemisCombatIntro" },
             },
@@ -180,7 +173,181 @@ function mod.AlwaysArtemisCombat(screen, button)
             NamedRequirements = { "NoRecentFieldNPCEncounter" },
             NamedRequirementsFalse = { "StandardPackageBountyActive", "SurfaceRouteLockedByTyphonKill" },
         }
+    },
+    Arachne = {
+        BaseEncounter = "BaseArachneCombat",
+        DefaultGameStateRequirements = {
+            {
+                PathTrue = { "GameState", "EncountersCompletedCache", "ArachneCombatF" },
+            },
+            {
+                Path = { "CurrentRun", "EncountersOccurredBiomeCache" },
+                HasNone = { "ArachneCombatF", "ArachneCombatG", "ArachneCombatN" },
+            },
+            NamedRequirements = { "NoRecentArachneEncounter" },
+        }
+    },
+    Athena = {
+        BaseEncounter = "BaseAthenaCombat",
+        DefaultGameStateRequirements = {
+            {
+                PathTrue = { "GameState", "EncountersCompletedCache", "AthenaCombatIntro" },
+            },
+            {
+                PathFalse = { "CurrentRun", "UseRecord", "NPC_Athena_01" },
+            },
+            {
+                Path = { "CurrentRun", "BiomeDepthCache" },
+                Comparison = ">=",
+                Value = 4,
+            },
+            {
+                PathFalse = { "CurrentRun", "ExpiredKeepsakes", "AthenaEncounterKeepsake" },
+            },
+            NamedRequirements = { "NoRecentFieldNPCEncounter" },
+            NamedRequirementsFalse = { "StandardPackageBountyActive", "SurfaceRouteLockedByTyphonKill" },
+        }
+    },
+    Heracles = {
+        BaseEncounter = "BaseHeraclesCombat",
+        DefaultGameStateRequirements = {
+            {
+                Path = { "CurrentRun", "EncountersCompletedCache" },
+                SumOf = { "HeraclesCombatIntro", "HeraclesCombatN", "HeraclesCombatN2", "HeraclesCombatO", "HeraclesCombatO2", "HeraclesCombatP", "HeraclesCombatP2" },
+                Comparison = "<=",
+                Value = 0,
+            },
+            {
+                PathTrue = { "GameState", "EncountersCompletedCache", "HeraclesCombatIntro" },
+            },
+            NamedRequirements = { "NoRecentHeraclesEncounter", "NoRecentFieldNPCEncounter" },
+            NamedRequirementsFalse = { "StandardPackageBountyActive" },
+        }
+    },
+    Icarus = {
+        BaseEncounter = "BaseIcarusCombat",
+        DefaultGameStateRequirements = {
+            {
+                PathFalse = { "CurrentRun", "UseRecord", "NPC_Icarus_01" },
+            },
+            {
+                Path = { "CurrentRun", "BiomeDepthCache" },
+                Comparison = ">=",
+                Value = 3,
+            },
+            {
+                Path = { "GameState", "BiomeVisits", "O" },
+                Comparison = ">",
+                Value = 1,
+            },
+            NamedRequirements = { "NoRecentFieldNPCEncounter" },
+            NamedRequirementsFalse = { "StandardPackageBountyActive" },
+        }
+    },
+    Nemesis = {
+        BaseEncounter = "BaseNemesisCombat",
+        DefaultGameStateRequirements = {
+            {
+                PathTrue = { "GameState", "EncountersCompletedCache", "NemesisCombatIntro" },
+            },
+            {
+                PathTrue = { "GameState", "TextLinesRecord", "NemesisGetFreeItemIntro01" },
+            },
+            {
+                Path = { "CurrentRun", "EncountersOccurredCache" },
+                HasNone = { "NemesisCombatIntro", "NemesisCombatF", "NemesisCombatG", "NemesisCombatH", "NemesisCombatI" },
+            },
+            {
+                Path = { "CurrentRun", "BiomeDepthCache" },
+                Comparison = ">=",
+                Value = 4,
+            },
+            NamedRequirements = { "NoRecentNemesisEncounter", "NoRecentFieldNPCEncounter" },
+            NamedRequirementsFalse = { "StandardPackageBountyActive", "HecateMissing" },
+        }
+    }
+}
+
+-- 通用函数：设置或重置 NPC 的 AlwaysForce 和 GameStateRequirements
+local function setNPCCombatAlwaysForce(npcName, enable)
+    local config = NPCConfig[npcName]
+    if not config then
+        debugShowText("错误：未找到 NPC 配置 - " .. npcName)
+        return
     end
+
+    local encounter = EncounterData[config.BaseEncounter]
+    if not encounter then
+        debugShowText("错误：未找到 EncounterData - " .. config.BaseEncounter)
+        return
+    end
+
+    if enable then
+        -- 强制触发，简化 GameStateRequirements
+        encounter.AlwaysForce = true
+        encounter.GameStateRequirements = {
+            {
+                PathTrue = { "GameState", "EncountersCompletedCache", config.BaseEncounter .. "Intro" },
+            }
+        }
+    else
+        -- 恢复默认 GameStateRequirements
+        encounter.AlwaysForce = false
+        encounter.GameStateRequirements = DeepCopyTable(config.DefaultGameStateRequirements)
+    end
+end
+
+-- 新增函数：同时对所有 NPC 设置或重置强制触发
+function mod.AlwaysAllNPCCombat(screen, button)
+    mod.setFlagForButton(button)
+    local enable = mod.flags[button.Key]
+    for npcName, _ in pairs(NPCConfig) do
+        setNPCCombatAlwaysForce(npcName, enable)
+    end
+end
+
+-- 针对每个 NPC 的函数，调用通用函数
+function mod.AlwaysArtemisCombat(screen, button)
+    mod.setFlagForButton(button)
+    setNPCCombatAlwaysForce("Artemis", mod.flags[button.Key])
+end
+
+function mod.AlwaysArachneCombat(screen, button)
+    mod.setFlagForButton(button)
+    setNPCCombatAlwaysForce("Arachne", mod.flags[button.Key])
+end
+
+function mod.AlwaysAthenaCombat(screen, button)
+    mod.setFlagForButton(button)
+    setNPCCombatAlwaysForce("Athena", mod.flags[button.Key])
+end
+
+function mod.AlwaysHeraclesCombat(screen, button)
+    mod.setFlagForButton(button)
+    setNPCCombatAlwaysForce("Heracles", mod.flags[button.Key])
+end
+
+function mod.AlwaysIcarusCombat(screen, button)
+    mod.setFlagForButton(button)
+    setNPCCombatAlwaysForce("Icarus", mod.flags[button.Key])
+end
+
+function mod.AlwaysNemesisCombat(screen, button)
+    mod.setFlagForButton(button)
+    setNPCCombatAlwaysForce("Nemesis", mod.flags[button.Key])
+end
+
+-- 辅助函数：深拷贝表，确保恢复默认配置时不修改原始数据
+function DeepCopyTable(orig)
+    local copy = {}
+    for k, v in pairs(orig) do
+        if type(v) == "table" then
+            copy[k] = DeepCopyTable(v)
+        else
+            copy[k] = v
+        end
+    end
+    return copy
 end
 
 function mod.ExpiringTimeThreshold(screen, button)
@@ -194,16 +361,22 @@ end
 
 function mod.TorchNumAdd(screen, button)
     PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
-    WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.NumProjectiles =  WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.NumProjectiles + 1
-    WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.ProjectileAngleOffset = math.rad(36)
-    warningShowTest('当前数量' .. WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.NumProjectiles )
+    local props = WeaponData.WeaponTorchSpecial.ChargeWeaponStages[1].WeaponProperties
+    if props.NumProjectiles < 30 then
+        props.NumProjectiles = props.NumProjectiles + 1
+        props.ProjectileAngleOffset = math.rad(360 / props.NumProjectiles)
+        warningShowTest("当前数量 " .. tostring(props.NumProjectiles))
+    else
+        warningShowTest("已达到最大数量 30")
+    end
 end
 
 function mod.TorchNumRestore(screen, button)
     PlaySound({ Name = "/SFX/Menu Sounds/GeneralWhooshMENU" })
-    WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.NumProjectiles =  2
-    WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.ProjectileAngleOffset = nil
-    warningShowTest('当前数量' .. WeaponData.WeaponTorch.WeaponTorchSpecial.ChargeWeaponStages[0].WeaponProperties.NumProjectiles )
+    local props = WeaponData.WeaponTorchSpecial.ChargeWeaponStages[1].WeaponProperties
+    props.NumProjectiles = 2
+    props.ProjectileAngleOffset = math.rad(180)
+    warningShowTest("当前数量 " .. tostring(props.NumProjectiles))
 end
 
 

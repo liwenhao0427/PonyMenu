@@ -132,15 +132,15 @@ end)
 
 
 -- StartWithWeaponUpgrade = "必锤子开局",
-ModUtil.Path.Wrap("StartNewRun", function(base, prevRun, args)
-    if mod.flags["StartWithWeaponUpgrade"] then
-        local run = base(prevRun, args)
-        run.CurrentRoom.ChosenRewardType = "WeaponUpgrade"
-        return run
-    else
-        return base(screen, button)
-    end
-end)
+-- ModUtil.Path.Wrap("StartNewRun", function(base, prevRun, args)
+--     if mod.flags["StartWithWeaponUpgrade"] then
+--         local run = base(prevRun, args)
+--         run.CurrentRoom.ChosenRewardType = "WeaponUpgrade"
+--         return run
+--     else
+--         return base(screen, button)
+--     end
+-- end)
 
 
 -- 每次进新房间之前触发
