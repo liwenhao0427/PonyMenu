@@ -95,4 +95,10 @@ public.AddLocale("en", {
 	TorchNumRestore  = "Restore Torch Ω Special count",
 	FasterLevelUp  = "Faster Keepsake leveling",
 
+    AxeMultiProjectile = "Increase Axe EX Attack Projectiles",
+    FullCoverage = "Full Coverage Angle",
+    ExtendedArc = "Extended Projectile Arc",
+    FastMagnetism = "Fast Magnetism Effect",
+    LobMaxAmmo = "Increase Lob Weapon Ammo Limit",
+
 })

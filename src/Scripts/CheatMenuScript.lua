@@ -365,9 +365,9 @@ function mod.TorchNumAdd(screen, button)
     if props.NumProjectiles < 30 then
         props.NumProjectiles = props.NumProjectiles + 1
         props.ProjectileAngleOffset = math.rad(360 / props.NumProjectiles)
-        warningShowTest("当前数量 " .. tostring(props.NumProjectiles))
+        debugShowText("当前数量 " .. tostring(props.NumProjectiles))
     else
-        warningShowTest("已达到最大数量 30")
+        debugShowText("已达到最大数量 30")
     end
 end
 
@@ -376,7 +376,7 @@ function mod.TorchNumRestore(screen, button)
     local props = WeaponData.WeaponTorchSpecial.ChargeWeaponStages[1].WeaponProperties
     props.NumProjectiles = 2
     props.ProjectileAngleOffset = math.rad(180)
-    warningShowTest("当前数量 " .. tostring(props.NumProjectiles))
+    debugShowText("当前数量 " .. tostring(props.NumProjectiles))
 end
 
 
@@ -386,6 +386,141 @@ function mod.FasterLevelUp(screen, button)
         TraitSetData.Keepsakes.GiftTrait.ChamberThresholds = {1, 1}
     else
         TraitSetData.Keepsakes.GiftTrait.ChamberThresholds = {25, 50}
+    end
+end
+
+
+-- 配置表：存储默认值以便恢复
+local DefaultConfig = {
+    TorchSpecial = {
+        NumProjectiles = 2,  -- 默认投射物数量
+        ProjectileAngleOffset = nil,  -- 默认角度偏移
+    },
+    AxeExAttack = {
+        ChargeWeaponStages = 		
+        {
+            { ManaCost = 10, WeaponProperties = { NumProjectiles = 1, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.32, ChannelSlowEventOnEnter = true, HideStageReachedFx = true },
+            { ManaCost = 11, WeaponProperties = { NumProjectiles  = 2, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 12, WeaponProperties = { NumProjectiles  = 3, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 13, WeaponProperties = { NumProjectiles  = 4, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 14, WeaponProperties = { NumProjectiles  = 5, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 15, WeaponProperties = { NumProjectiles  = 6, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 16, WeaponProperties = { NumProjectiles  = 7, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 17, WeaponProperties = { NumProjectiles  = 8, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 18, WeaponProperties = { NumProjectiles  = 9, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 19, WeaponProperties = { NumProjectiles  = 10, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, HideStageReachedFx = true },
+            { ManaCost = 20, WeaponProperties = { NumProjectiles  = 11, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11, },
+		},
+    },
+    WeaponCoverage = {
+        AngleCoverage = 220,  -- 默认角度覆盖
+    },
+    AxeSpinProjectile = {
+        ArcEnd = -1080,  -- 默认弧线结束角度
+    },
+    MagnetismConsumable = {
+        MagnetismEscalateDelay = 10.0,
+        MagnetismHintRemainingTime = 5.0,
+    },
+    LobWeapon = {
+        MaxAmmo = 4,  -- 默认弹药上限
+    },
+}
+
+-- 按钮2：调整斧头EX攻击为一次性50个投射物（基于 Axe diff）
+function mod.AxeMultiProjectile(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+    if mod.flags[button.Key] then
+        WeaponData.WeaponAxe.ChargeWeaponStages = {
+            { ManaCost = 20, WeaponProperties = { NumProjectiles  = 11, FireEndGraphic = "Melinoe_Axe_AttackEx1_End" }, Wait = 0.11 },
+        }
+        debugShowText("斧头EX攻击投射物设置为11，等待时间0.11秒")
+    else
+        -- 恢复默认值
+        WeaponData.WeaponAxe.ChargeWeaponStages = DeepCopyTable(DefaultConfig.AxeExAttack.ChargeWeaponStages)
+        debugShowText("恢复默认斧头EX攻击配置")
+    end
+end
+
+-- 按钮3：调整武器效果覆盖角度为360度（基于 AngleCoverage diff）
+function mod.FullCoverage(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+    local weapons = { "WeaponAxe" }  -- 可扩展到其他武器，如WeaponLob
+    for _, weaponName in ipairs(weapons) do
+        local weaponData = WeaponData[weaponName]
+        if weaponData then
+            for _, effect in ipairs(weaponData.Effects or {}) do
+                if effect.AngleCoverage then
+                    if mod.flags[button.Key] then
+                        effect.AngleCoverage = 360
+                        debugShowText(weaponName .. "覆盖角度设置为360度")
+                    else
+                        effect.AngleCoverage = DefaultConfig.WeaponCoverage.AngleCoverage
+                        debugShowText(weaponName .. "恢复默认覆盖角度: 220度")
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- 按钮4：调整投射物弧线结束角度为-10800（基于 ArcEnd diff）
+function mod.ExtendedArc(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+    local projectileName = "ProjectileAxeSpin"  -- 基于diff
+    local projectileData = ProjectileData[projectileName]
+    if projectileData then
+        if mod.flags[button.Key] then
+            projectileData.ArcEnd = -10800
+            debugShowText("投射物弧线结束角度设置为-10800度")
+        else
+            projectileData.ArcEnd = DefaultConfig.AxeSpinProjectile.ArcEnd
+            debugShowText("恢复默认弧线结束角度: -1080度")
+        end
+    else
+        debugShowText("错误：未找到投射物 " .. projectileName)
+    end
+end
+
+-- 按钮5：加速磁性效果（基于 Magnetism diff）
+function mod.FastMagnetism(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+    local consumableName = "LobAmmoPack"  -- 假设为LobAmmoPack，基于ConsumableData
+    local consumableData = ConsumableData[consumableName]
+    if consumableData then
+        if mod.flags[button.Key] then
+            consumableData.MagnetismEscalateDelay = 1
+            consumableData.MagnetismHintRemainingTime = 0.5
+            debugShowText("磁性效果延迟设置为1秒，提示时间0.5秒")
+        else
+            consumableData.MagnetismEscalateDelay = DefaultConfig.MagnetismConsumable.MagnetismEscalateDelay
+            consumableData.MagnetismHintRemainingTime = DefaultConfig.MagnetismConsumable.MagnetismHintRemainingTime
+            debugShowText("恢复默认磁性效果: 延迟10秒，提示5秒")
+        end
+    else
+        debugShowText("错误：未找到消耗品 " .. consumableName)
+    end
+end
+
+-- 按钮6：调整Lob武器最大弹药为20（基于 MaxAmmo diff）
+function mod.LobMaxAmmo(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+    local weaponData = WeaponData.WeaponLob
+    if weaponData then
+        if mod.flags[button.Key] then
+            weaponData.MaxAmmo = 20
+            debugShowText("Lob武器最大弹药设置为20")
+        else
+            weaponData.MaxAmmo = DefaultConfig.LobWeapon.MaxAmmo
+            debugShowText("恢复默认最大弹药: 4")
+        end
+    else
+        debugShowText("错误：未找到WeaponLob")
     end
 end
 
@@ -410,7 +545,7 @@ function mod.setDropLoot(screen, button)
     if metaupgradeDropBoonBoost > 0.1 then
         metaupgradeDropBoonBoost = 0.1
     end
-    warningShowTest('当前概率' .. metaupgradeDropBoonBoost*1000 .. '%')
+    debugShowText('当前概率' .. metaupgradeDropBoonBoost*1000 .. '%')
 end
 
 -- 关闭击杀概率掉落祝福
@@ -580,7 +715,7 @@ end
 
 EphyraZoomOutPre = nil
 function EphyraZoomOut_override( usee )
-    warningShowTest('1')
+    debugShowText('1')
     AddInputBlock({ Name = "EphyraZoomOut" })
     AddTimerBlock( CurrentRun, "EphyraZoomOut" )
     SessionMapState.BlockPause = true
@@ -700,36 +835,36 @@ function EphyraZoomOut_override( usee )
 
         -- MOD Start
         if CurrentRun.PylonRooms and CurrentRun.PylonRooms[room.Name] then
-            warningShowTest('PylonRooms')
+            debugShowText('PylonRooms')
             table.insert(subIcons, "GUI\\Icons\\GhostPack")
         end
         if Contains(room.LegalEncounters, "HealthRestore") then
-            warningShowTest('HealthRestore')
+            debugShowText('HealthRestore')
             table.insert(subIcons, "ExtraLifeHeart")
         end
         if room.HarvestPointsAllowed > 0 then
-            warningShowTest('HarvestPointsAllowed')
+            debugShowText('HarvestPointsAllowed')
             table.insert(subIcons, "GatherIcon")
         end
         if room.ShovelPointSuccess and HasAccessToTool("ToolShovel") then
-            warningShowTest('ToolShovel')
+            debugShowText('ToolShovel')
             table.insert(subIcons, "ShovelIcon")
         end
         if room.FishingPointSuccess and HasAccessToTool("ToolFishingRod") then
-            warningShowTest('ToolFishingRod')
+            debugShowText('ToolFishingRod')
             table.insert(subIcons, "FishingIcon")
         end
         if room.PickaxePointSuccess and HasAccessToTool("ToolPickaxe") then
-            warningShowTest('ToolPickaxe')
+            debugShowText('ToolPickaxe')
             table.insert(subIcons, "PickaxeIcon")
         end
         if room.ExorcismPointSuccess and HasAccessToTool("ToolExorcismBook") then
-            warningShowTest('ToolExorcismBook')
+            debugShowText('ToolExorcismBook')
             table.insert(subIcons, "ExorcismIcon")
         end
 
         if room.RewardPreviewIcon ~= nil and not HasHeroTraitValue("HiddenRoomReward") then
-            warningShowTest('RewardPreviewIcon')
+            debugShowText('RewardPreviewIcon')
             table.insert(subIcons, room.RewardPreviewIcon)
         end
         -- MOD End

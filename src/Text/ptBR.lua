@@ -94,4 +94,9 @@ public.AddLocale("pt-BR", {
 	TorchNumRestore  = "Restaurar o número de especiais Ω da Tocha",
 	FasterLevelUp  = "Aprimoramento rápido de lembranças",
 
+	AxeMultiProjectile = "Aumentar os projéteis de ataque EX do Machado",
+    FullCoverage = "Ângulo de cobertura total",
+    ExtendedArc = "Arco de projétil estendido",
+    FastMagnetism = "Efeito de magnetismo rápido",
+    LobMaxAmmo = "Aumentar o limite de munição da arma Lob",
 })

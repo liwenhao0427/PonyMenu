@@ -94,4 +94,10 @@ public.AddLocale("zh-CN", {
 	TorchNumAdd  = "火炬Ω特攻数量增加",
 	TorchNumRestore  = "火炬Ω特攻数量还原",
 	FasterLevelUp  = "信物快速升级",
+
+	AxeMultiProjectile = "斧头秒蓄",
+    FullCoverage = "斧子Ω特全角度格挡",
+    ExtendedArc = "火炬Ω特攻无限回旋",
+    FastMagnetism = "头颅快速回收",
+    LobMaxAmmo = "头颅弹药上限20",
 })

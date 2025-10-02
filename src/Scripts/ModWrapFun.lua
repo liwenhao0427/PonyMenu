@@ -232,20 +232,49 @@ local replaceList = {
     },
 }
 
-ModUtil.Path.Wrap("ChooseRoomReward", function(base, run, room, rewardStoreName, previouslyChosenRewards, args)
+-- ModUtil.Path.Wrap("ChooseRoomReward", function(base, run, room, rewardStoreName, previouslyChosenRewards, args)
+--     if mod.flags["NoRewardRoom"] then
+--         -- 父函数，照常执行,获取房间名称
+--         local name = base(run, room, rewardStoreName, previouslyChosenRewards, args)
+--         -- 替换为祝福
+--         if name and replaceList[name] ~= nil and (replaceList[name].chance == nil or RandomChance(replaceList[name].chance)  ) then
+--             debugShowText(replaceList[name].text)
+--             name = replaceList[name].target
+--         end
+--         return name
+--     else
+--         return base(run, room, rewardStoreName, previouslyChosenRewards, args)
+--     end
+-- end)
+
+ModUtil.Path.Wrap("ChooseNextRewardStore", function(base, run)
     if mod.flags["NoRewardRoom"] then
-        -- 父函数，照常执行,获取房间名称
-        local name = base(run, room, rewardStoreName, previouslyChosenRewards, args)
-        -- 替换为祝福
-        if name and replaceList[name] ~= nil and (replaceList[name].chance == nil or RandomChance(replaceList[name].chance)  ) then
-            debugShowText(replaceList[name].text)
-            name = replaceList[name].target
+        RandomSynchronize()
+
+        local rewardStoreName = nil
+        local targetMetaRewardsRatio = (run.TargetMetaRewardsRatio or run.CurrentRoom.TargetMetaRewardsRatio or run.Hero.TargetMetaRewardsRatio)
+        --DebugPrint({ Text = "TargetMetaRewardsRatio = "..TargetMetaRewardsRatio })
+        local minorRunProgressChance = targetMetaRewardsRatio 
+        local currentMetaRunProgressRatio = CalcMetaProgressRatio( run )
+        if currentMetaRunProgressRatio ~= nil then
+            minorRunProgressChance = minorRunProgressChance + (run.Hero.TargetMetaRewardsAdjustSpeed * (targetMetaRewardsRatio - currentMetaRunProgressRatio))
         end
-        return name
+        --DebugPrint({ Text = "minorRunProgressChance = "..minorRunProgressChance })
+        if RandomChance( minorRunProgressChance ) then
+            -- rewardStoreName = "MetaProgress"
+            debugShowText('资源房间替换为进度房间')
+            rewardStoreName = "RunProgress"
+        else
+            rewardStoreName = "RunProgress"
+        end
+        --DebugPrint({ Text = "rewardStoreName = "..rewardStoreName })
+        run.NextRewardStoreName = rewardStoreName
+        return rewardStoreName
     else
-        return base(run, room, rewardStoreName, previouslyChosenRewards, args)
+        return base(run)
     end
 end)
+
 
 --DropLoot = "击杀概率掉落祝福",
 ModUtil.Path.Wrap("Kill", function(base, victim, triggerArgs)

@@ -123,6 +123,11 @@ function mod.setupScreenData()
 						FasterLevelUp = mod.genBtn("FasterLevelUp", "FasterLevelUp"),
 						--AlwaysEncounterStoryRooms = mod.genBtn("AlwaysEncounterStoryRooms", "AlwaysEncounterStoryRooms"),
 						--SlowEffectsOnTimer = mod.genBtn("SlowEffectsOnTimer", "SlowEffectsOnTimer"),
+						-- AxeMultiProjectile = mod.genBtn("AxeMultiProjectile", "AxeMultiProjectile"),
+						-- FullCoverage = mod.genBtn("FullCoverage", "FullCoverage"),
+						-- ExtendedArc = mod.genBtn("ExtendedArc", "ExtendedArc"),
+						FastMagnetism = mod.genBtn("FastMagnetism", "FastMagnetism"),
+						LobMaxAmmo = mod.genBtn("LobMaxAmmo", "LobMaxAmmo"),
 						CloseButton =
 						{
 							Graphic = "ButtonClose",

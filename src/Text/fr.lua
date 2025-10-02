@@ -94,4 +94,10 @@ public.AddLocale("fr", {
 	TorchNumAdd  = "Augmenter le nombre d'attaques spéciales Ω de la Torche",
 	TorchNumRestore  = "Restaurer le nombre d'attaques spéciales Ω de la Torche",
 	FasterLevelUp  = "Amélioration rapide des souvenirs",
+
+	AxeMultiProjectile = "Augmenter les projectiles d'attaque EX de la Hache",
+    FullCoverage = "Angle de couverture total",
+    ExtendedArc = "Arc de projectile étendu",
+    FastMagnetism = "Effet de magnétisme rapide",
+    LobMaxAmmo = "Augmenter la limite de munitions de l'arme Lob",
 })
