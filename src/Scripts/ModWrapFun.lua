@@ -262,7 +262,7 @@ ModUtil.Path.Wrap("ChooseNextRewardStore", function(base, run)
         --DebugPrint({ Text = "minorRunProgressChance = "..minorRunProgressChance })
         if RandomChance( minorRunProgressChance ) then
             -- rewardStoreName = "MetaProgress"
-            debugShowText('资源房间替换为进度房间')
+            -- debugShowText('资源房间替换为进度房间')
             rewardStoreName = "RunProgress"
         else
             rewardStoreName = "RunProgress"
