@@ -120,7 +120,7 @@ function mod.setupScreenData()
 						AlwaysArtemisCombat = mod.genBtn("AlwaysArtemisCombat", "AlwaysAllNPCCombat"),
 						TorchNumAdd = mod.genBtn("TorchNumAdd", "TorchNumAdd"),
 						TorchNumRestore = mod.genBtn("TorchNumRestore", "TorchNumRestore"),
-						FasterLevelUp = mod.genBtn("FasterLevelUp", "FasterLevelUp"),
+						--FasterLevelUp = mod.genBtn("FasterLevelUp", "FasterLevelUp"),
 						--AlwaysEncounterStoryRooms = mod.genBtn("AlwaysEncounterStoryRooms", "AlwaysEncounterStoryRooms"),
 						--SlowEffectsOnTimer = mod.genBtn("SlowEffectsOnTimer", "SlowEffectsOnTimer"),
 						-- AxeMultiProjectile = mod.genBtn("AxeMultiProjectile", "AxeMultiProjectile"),
