@@ -100,5 +100,7 @@ public.AddLocale("en", {
     ExtendedArc = "Extended Projectile Arc",
     FastMagnetism = "Fast Magnetism Effect",
     LobMaxAmmo = "Increase Lob Weapon Ammo Limit",
+	AxeOmegaSpinCount = "Axe Ω Spin Count (20)",
+	GuaranteedZagContract = "Guaranteed Zagreus Contract",
 
 })

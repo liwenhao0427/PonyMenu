@@ -1552,9 +1552,9 @@ function mod.OpenBossSelector()
 			local titleText = ShallowCopyTable(screen.TitleText)
 			titleText.Id = components[buttonKey].Id
 			titleText.Text = boss.Name
-			if not GameState.RoomCountCache[value] then
-				titleText.Text = boss.Name .. "（概率报错）"
-			end
+			-- if not GameState.RoomCountCache[value] then
+			-- 	titleText.Text = boss.Name .. "（概率报错）"
+			-- end
 			CreateTextBox(titleText)
 		end
 	else

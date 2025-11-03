@@ -100,4 +100,6 @@ public.AddLocale("zh-CN", {
     ExtendedArc = "火炬Ω特攻无限回旋",
     FastMagnetism = "头颅快速回收",
     LobMaxAmmo = "头颅弹药上限20",
+	AxeOmegaSpinCount = "斧Ω攻击转圈次数20",
+	GuaranteedZagContract = "扎格列欧斯挑战入口100%",
 })

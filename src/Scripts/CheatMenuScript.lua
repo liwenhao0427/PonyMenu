@@ -425,6 +425,28 @@ local DefaultConfig = {
     LobWeapon = {
         MaxAmmo = 4,  -- 默认弹药上限
     },
+    AxeOmegaSpecial = {
+        ChargeWeaponStages =
+        {
+            {
+                ManaCost = 10,
+                WeaponProperties = { NumProjectiles = 1, ProjectileBlastIncrement = 0.15, ProjectileIntervalStart = 0.44, ProjectileInterval = 0.44 },
+                ProjectileProperties = { DamageMultiplier = 3 },
+                Wait = 0.32,
+                ChannelSlowEventOnEnter = true,
+                HideStageReachedFx = true
+            },
+            {
+                ManaCost = 15,
+                WeaponProperties = { NumProjectiles  = 3 },
+                ProjectileProperties = { DamageMultiplier = 2 },
+                Wait = 0.15,
+                HideStageReachedFx = true
+            },
+            { ManaCost = 20, WeaponProperties = { NumProjectiles  = 5 }, ProjectileProperties = { DamageMultiplier = 1 }, Wait = 0.15, HideStageReachedFx = true },
+        }
+    },
+    ZagContractChance = 0.40,
 }
 
 -- 按钮2：调整斧头EX攻击为一次性50个投射物（基于 Axe diff）
@@ -521,6 +543,53 @@ function mod.LobMaxAmmo(screen, button)
         end
     else
         debugShowText("错误：未找到WeaponLob")
+    end
+end
+
+-- 按钮7：调整斧头Ω攻击转圈次数
+function mod.AxeOmegaSpinCount(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+
+    if not WeaponData.WeaponAxeSpecial then
+        debugShowText("错误: WeaponData.WeaponAxeSpecial 未找到")
+        return
+    end
+
+    if mod.flags[button.Key] then
+        -- 设置为单阶段，20个投射物
+        WeaponData.WeaponAxeSpecial.ChargeWeaponStages = {
+            { ManaCost = 10, WeaponProperties = { NumProjectiles = 20, ProjectileBlastIncrement = 0.15, ProjectileIntervalStart = 0.44, ProjectileInterval = 0.44 }, ProjectileProperties = { DamageMultiplier = 3 }, Wait = 0.32, ChannelSlowEventOnEnter = true, HideStageReachedFx = true }
+        }
+        debugShowText("斧头Ω攻击设置为: 1阶段, 20转")
+    else
+        -- 恢复默认值
+        WeaponData.WeaponAxeSpecial.ChargeWeaponStages = DeepCopyTable(DefaultConfig.AxeOmegaSpecial.ChargeWeaponStages)
+        debugShowText("恢复默认斧头Ω攻击配置 (1/3/5 转)")
+    end
+end
+
+-- 按钮8：扎格列欧斯挑战入口100%
+function mod.GuaranteedZagContract(screen, button)
+    PlaySound({ Name = "/SFX/Menu Sounds/GodBoonInteract" })
+    mod.setFlagForButton(button)
+
+    -- 根据 EncounterSets.lua，扎格契约在 ShopRoomEvents 列表的第2个
+    local contractEvent = EncounterSets.ShopRoomEvents[2]
+
+    if not contractEvent or not contractEvent.GameStateRequirements or contractEvent.FunctionName ~= "SpawnZagContract" then
+        debugShowText("错误: 未找到 EncounterSets.ShopRoomEvents[2].GameStateRequirements (SpawnZagContract)")
+        return
+    end
+
+    if mod.flags[button.Key] then
+        -- 设置为100%
+        contractEvent.GameStateRequirements.ChanceToPlay = 1.0
+        debugShowText("扎格列欧斯挑战入口设置为: 100%")
+    else
+        -- 恢复默认值
+        contractEvent.GameStateRequirements.ChanceToPlay = DefaultConfig.ZagContractChance
+        debugShowText("恢复默认扎格列欧斯挑战入口概率: 40%")
     end
 end
 

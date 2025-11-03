@@ -128,6 +128,8 @@ function mod.setupScreenData()
 						-- ExtendedArc = mod.genBtn("ExtendedArc", "ExtendedArc"),
 						FastMagnetism = mod.genBtn("FastMagnetism", "FastMagnetism"),
 						LobMaxAmmo = mod.genBtn("LobMaxAmmo", "LobMaxAmmo"),
+						-- AxeOmegaSpinCount = mod.genBtn("AxeOmegaSpinCount", "AxeOmegaSpinCount"),
+						GuaranteedZagContract = mod.genBtn("GuaranteedZagContract", "GuaranteedZagContract"),
 						CloseButton =
 						{
 							Graphic = "ButtonClose",
@@ -651,7 +653,8 @@ function mod.setupScreenData()
 				"I_Boss01",
 				"N_Boss01",
 				"O_Boss01",
-				"P_Boss01"
+				"P_Boss01",
+				"Q_Boss01"
 			},
 			BossData = {
 				F_Boss01 = {
@@ -682,7 +685,7 @@ function mod.setupScreenData()
 					Name = "Prometheus_Full",
 					Portrait = "Codex_Portrait_Prometheus",
 				},
-				Q_Boss02 = {
+				Q_Boss01 = {
 					Name = "TyphonHead_Full",
 					Portrait = "Codex_Portrait_Typhon",
 				}

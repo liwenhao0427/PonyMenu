@@ -101,4 +101,6 @@ public.AddLocale("zh-TW", {
     ExtendedArc = "投射物無限迴旋",
     FastMagnetism = "迅捷磁引效果",
     LobMaxAmmo = "Lob武器彈藥上限增加",
+	AxeOmegaSpinCount = "斧Ω攻擊旋轉次數20",
+	GuaranteedZagContract = "扎格列歐斯挑戰入口100%",
 })
