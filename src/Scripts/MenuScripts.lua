@@ -114,20 +114,7 @@ function mod.BoonSelectorReloadPage(screen)
 end
 
 function mod.SpawnBoon(screen, button)
-	local mods = rom.mods
-	local zanncdwbl_droppableGods = mods["zannc-Droppable_Gods"]
-
-    if zanncdwbl_droppableGods then
-        if screen.Upgrade == "NPC_Artemis_Field_01" then
-            screen.Upgrade = "ArtemisUpgrade"
-        elseif screen.Upgrade == "NPC_Athena_01" then
-            screen.Upgrade = "AthenaUpgrade"
-        elseif screen.Upgrade == "NPC_Dionysus_01" then
-            screen.Upgrade = "DionysusUpgrade"
-        end
-    end
-    
-	CreateLoot({ Name = screen.Upgrade, OffsetX = 100, SpawnPoint = CurrentRun.Hero.ObjectId })
+	CreateLoot({ Name = screen.Upgrade, OffsetX = 100, SpawnPoint = CurrentRun.Hero.ObjectId, AutoLoadPackages = true})
 	mod.CloseBoonSelector(screen)
 end
 
@@ -1425,6 +1412,7 @@ function mod.BoonManagerPageButtons(screen, menu)
 		components.LeftPageButton.Menu = menu
 		components.LeftPageButton.Direction = "Left"
 		components.LeftPageButton.ControlHotkeys = { "MenuLeft", "Left" }
+		components.LeftPageButton.MouseControlHotkeys = { "MenuUp" }
 	end
 	if screen.CurrentPage ~= screen.LastPage then
 		components.RightPageButton = CreateScreenComponent({
@@ -1438,6 +1426,7 @@ function mod.BoonManagerPageButtons(screen, menu)
 		components.RightPageButton.Menu = menu
 		components.RightPageButton.Direction = "Right"
 		components.RightPageButton.ControlHotkeys = { "MenuRight", "Right" }
+		components.RightPageButton.MouseControlHotkeys = { "MenuDown" }
 	end
 end
 

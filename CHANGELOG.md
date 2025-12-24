@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.11.4] - 2025-10-31
+## [0.11.7] - 2025-12-22
+
+- Add mouse scrolling for boon selector like pages
+
+## [0.11.6] - 2025-12-10
+
+- Remove Droppable Gods compat (done in their mod now)
+
+## [0.11.5] - 2025-11-24
+
+- made command data public for 3rd party access @zerp
 
 ## [0.11.3] - 2025-09-28
 
@@ -193,7 +203,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First version of the mod!
 
-[unreleased]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.4...HEAD
+[unreleased]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.7...HEAD
+[0.11.7]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.6...0.11.7
+[0.11.6]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.5...0.11.6
+[0.11.5]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.4...0.11.5
 [0.11.4]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.3...0.11.4
 [0.11.3]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/PonyWarrior/PonyMenu/compare/0.11.1...0.11.2
