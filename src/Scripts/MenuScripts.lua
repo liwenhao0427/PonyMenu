@@ -409,6 +409,19 @@ end
 
 --#region RESOURCE MENU
 
+function mod.CheckFinalBossDropEligible(resource)
+	local blockedResources = {
+		["MixerQBoss"] = true,
+		["MixerIBoss"] = true,
+		["HadesSpearPoints"] = true,
+		["MixerMythic"] = true,
+	}
+	if blockedResources[resource] and not game.GameState.ReachedTrueEnding then
+		return false
+	end
+	return true
+end
+
 function mod.OpenResourceMenu(screen, button)
 	if IsScreenOpen("ResourceMenu") then
 		return
@@ -431,7 +444,8 @@ function mod.OpenResourceMenu(screen, button)
 	screen.ResourceList = {}
 	for _, category in ipairs(ScreenData.InventoryScreen.ItemCategories) do
 		for k, resource in ipairs(category) do
-			if type(resource) == 'string' and not Contains(displayedResources, resource) then
+			if type(resource) == 'string' and not Contains(displayedResources, resource) and
+					mod.CheckFinalBossDropEligible(resource) then
 				table.insert(displayedResources, resource)
 				local rowOffset = 100
 				local columnOffset = 400
@@ -1490,6 +1504,17 @@ function mod.OpenBossSelector()
 	local screen = DeepCopyTable(ScreenData.BossSelector)
 	local components = screen.Components
 	local children = screen.ComponentData.Background.Children
+	local itemOrder = screen.ItemOrder.Regular
+	local bossData = screen.BossData.Regular
+	local color = Color.White
+
+	if IsBossDifficultyShrineUpgradeActive() then
+		-- rival
+		itemOrder = screen.ItemOrder.Rival
+		bossData = screen.BossData.Rival
+		color = Color.Purple
+	end
+
 	HideCombatUI(screen.Name)
 	OnScreenOpened(screen)
 	CreateScreenFromData(screen, screen.ComponentData)
@@ -1499,7 +1524,7 @@ function mod.OpenBossSelector()
 
 	--Display
 
-	if data.SavedState then
+	if data.SavedStates then
 		local index = 0
 		local rowOffset = 400
 		local columnOffset = 400
@@ -1508,9 +1533,10 @@ function mod.OpenBossSelector()
 		local rowoffsetX = 350
 		local rowoffsetY = 350
 
-		for _, value in ipairs(screen.ItemOrder) do
-			local boss = screen.BossData[value]
-			boss.Room = DeepCopyTable(RoomData[value])
+		for _, value in ipairs(itemOrder) do
+			-- if GameState.RoomCountCache[value] then
+				local boss = bossData[value]
+				boss.Room = DeepCopyTable(RoomData[value])
 
 			local key = "Boss" .. index
 			local buttonKey = "Button" .. index
@@ -1541,23 +1567,22 @@ function mod.OpenBossSelector()
 			components[buttonKey].OnPressedFunctionName = mod.HandleBossSelection
 			fraction = 1.0
 
-			SetAlpha({ Ids = { components[key].Id, components[buttonKey].Id }, Fraction = 0 })
-			SetAlpha({ Ids = { components[key].Id, components[buttonKey].Id }, Fraction = fraction, Duration = 0.9 })
-			SetAnimation({ DestinationId = components[key].Id, Name = boss.Portrait, Scale = 0.4 })
-			local delay = RandomFloat(0.1, 0.5)
-			Move({
-				Ids = { components[key].Id, components[buttonKey].Id },
-				OffsetX = offsetX,
-				OffsetY = offsetY,
-				Duration = delay
-			})
-			local titleText = ShallowCopyTable(screen.TitleText)
-			titleText.Id = components[buttonKey].Id
-			titleText.Text = boss.Name
-			-- if not GameState.RoomCountCache[value] then
-			-- 	titleText.Text = boss.Name .. "（概率报错）"
+				SetAlpha({ Ids = { components[key].Id, components[buttonKey].Id }, Fraction = 0 })
+				SetAlpha({ Ids = { components[key].Id, components[buttonKey].Id }, Fraction = fraction, Duration = 0.9 })
+				SetAnimation({ DestinationId = components[key].Id, Name = boss.Portrait, Scale = 0.4 })
+				local delay = RandomFloat(0.1, 0.5)
+				Move({
+					Ids = { components[key].Id, components[buttonKey].Id },
+					OffsetX = offsetX,
+					OffsetY = offsetY,
+					Duration = delay
+				})
+				local titleText = ShallowCopyTable(screen.TitleText)
+				titleText.Id = components[buttonKey].Id
+				titleText.Text = boss.Name
+				titleText.Color = color
+				CreateTextBox(titleText)
 			-- end
-			CreateTextBox(titleText)
 		end
 	else
 		local txt = mod.Locale.BossSelectorNoSavedState
@@ -1588,14 +1613,19 @@ function mod.OpenBossSelector()
 end
 
 function mod.HandleBossSelection(screen, button)
-	if data.SavedState == nil then
+	print("Boss Select")
+	if data.SavedStates == nil or IsEmpty(data.SavedStates) then
 		return
 	end
-	local boss = button.Boss
+	data.SelectedBoss = button.Boss
 	mod.CloseBossSelectScreen(screen)
+	mod.OpenStateSelectorLoad(screen, button, true)
+end
 
+function mod.DoBossHandling()
+	print("Boss Handling")
+	local boss = data.SelectedBoss
 	boss.Room.KillHeroOnCompletion = true
-
 	boss.Room.NoReward = true
 	boss.Room.ForcedReward = nil
 	boss.Room.HasHarvestPoint = false
@@ -1789,3 +1819,219 @@ function mod.DoesPlayerHaveHex()
 end
 
 --#endregion
+
+--#region STATE SELECTOR
+
+function mod.OpenStateSelectorSave(screen, button)
+	if IsScreenOpen("StateSelector") then
+		return
+	end
+	mod.UpdateScreenData()
+
+	local screen = DeepCopyTable(ScreenData.StateSelector)
+	screen.Mode = "Save"
+	screen.FirstPage = 0
+	screen.LastPage = 0
+	screen.CurrentPage = screen.FirstPage
+	screen.AwaitingNameInputForSlot = nil
+	local components = screen.Components
+
+	OnScreenOpened(screen)
+	HideCombatUI(screen.Name)
+	CreateScreenFromData(screen, screen.ComponentData)
+
+	mod.StateSelectorLoadPage(screen)
+
+	SetColor({ Id = components.BackgroundTint.Id, Color = Color.Black })
+	SetAlpha({ Id = components.BackgroundTint.Id, Fraction = 0.0, Duration = 0 })
+	SetAlpha({ Id = components.BackgroundTint.Id, Fraction = 0.9, Duration = 0.3 })
+	wait(0.3)
+
+	SetConfigOption({ Name = "ExclusiveInteractGroup", Value = "Combat_Menu_TraitTray" })
+	screen.KeepOpen = true
+
+	HandleScreenInput(screen)
+end
+
+function mod.OpenStateSelectorLoad(screen, button, isBossSelectMode)
+	if IsScreenOpen("StateSelector") then
+		return
+	end
+	mod.UpdateScreenData()
+
+	local screen = DeepCopyTable(ScreenData.StateSelector)
+	screen.Mode = "Load"
+	screen.FirstPage = 0
+	screen.LastPage = 0
+	screen.CurrentPage = screen.FirstPage
+	local components = screen.Components
+	if isBossSelectMode then
+		screen.isBossSelectMode = true
+	end
+
+	OnScreenOpened(screen)
+	HideCombatUI(screen.Name)
+	CreateScreenFromData(screen, screen.ComponentData)
+
+	mod.StateSelectorLoadPage(screen)
+
+	SetColor({ Id = components.BackgroundTint.Id, Color = Color.Black })
+	SetAlpha({ Id = components.BackgroundTint.Id, Fraction = 0.0, Duration = 0 })
+	SetAlpha({ Id = components.BackgroundTint.Id, Fraction = 0.9, Duration = 0.3 })
+	wait(0.3)
+
+	SetConfigOption({ Name = "ExclusiveInteractGroup", Value = "Combat_Menu_TraitTray" })
+	screen.KeepOpen = true
+	HandleScreenInput(screen)
+end
+
+function mod.CloseStateSelector(screen)
+	mod.AwaitingNameInputForSlot = nil
+	ShowCombatUI(screen.Name)
+	SetConfigOption({ Name = "ExclusiveInteractGroup", Value = nil })
+	OnScreenCloseStarted(screen)
+	CloseScreen(GetAllIds(screen.Components), 0.15)
+	OnScreenCloseFinished(screen)
+	notifyExistingWaiters("StateSelector")
+end
+
+function mod.StateSelectorLoadPage(screen)
+	local boonsPerRow = 4
+	local maxRows = 6
+	local maxSlots = boonsPerRow * maxRows
+	local columnOffset = 410
+	local rowOffset = 140
+
+	screen.RowStartX = -(columnOffset * (boonsPerRow - 1)) / 2
+	screen.RowStartY = -(rowOffset * (maxRows - 1)) / 2
+
+	if data.SavedStates == nil then
+		data.SavedStates = {}
+	end
+
+	for index = 1, maxSlots do
+		local rowIndex = math.floor((index - 1) / boonsPerRow)
+		local offsetX = screen.RowStartX + columnOffset * ((index - 1) % boonsPerRow)
+		local offsetY = screen.RowStartY + rowOffset * rowIndex
+
+		local purchaseButtonKey = "SlotButton" .. index
+		screen.Components[purchaseButtonKey] = CreateScreenComponent({
+			Name = "ButtonDefault",
+			Group = "Combat_Menu_TraitTray",
+			ScaleX = 1.25,
+			ScaleY = 1.25,
+			ToDestroy = true
+		})
+		SetInteractProperty({
+			DestinationId = screen.Components[purchaseButtonKey].Id,
+			Property = "TooltipOffsetY",
+			Value = 100
+		})
+
+		screen.Components[purchaseButtonKey].SlotIndex = index
+		if screen.Mode == "Save" then
+			screen.Components[purchaseButtonKey].OnPressedFunctionName = mod.TriggerSaveState
+		else
+			screen.Components[purchaseButtonKey].OnPressedFunctionName = mod.TriggerLoadState
+		end
+
+		Attach({
+			Id = screen.Components[purchaseButtonKey].Id,
+			DestinationId = screen.Components.Background.Id,
+			OffsetX = offsetX,
+			OffsetY = offsetY
+		})
+
+		local titleText = ""
+		local descText = ""
+		local textOffsetX = 0
+		local iconAnimation = nil
+
+		if data.SavedStates[index] ~= nil and data.SavedStates[index].Weapon ~= nil then
+			local saveObj = data.SavedStates[index]
+
+			titleText = saveObj.Weapon or "UnknownWeapon"
+
+			if saveObj.Aspect and saveObj.Aspect.Name then
+			    descText = saveObj.Aspect.Name
+			    if TraitData[saveObj.Aspect.Name] ~= nil and TraitData[saveObj.Aspect.Name].Icon ~= nil then
+			        iconAnimation = TraitData[saveObj.Aspect.Name].Icon
+			    end
+			end
+
+			if iconAnimation then
+			    textOffsetX = 35
+			end
+		else
+		    titleText = mod.Locale.EmptySlot
+		end
+
+		CreateTextBox({
+			Id = screen.Components[purchaseButtonKey].Id,
+			Text = titleText,
+			FontSize = 20,
+			OffsetX = textOffsetX,
+			OffsetY = -15,
+			Color = Color.White,
+			Font = "P22UndergroundSCMedium",
+			ShadowBlur = 0,
+			ShadowColor = { 0, 0, 0, 1 },
+			ShadowOffset = { 0, 2 },
+			Justification = "Center"
+		})
+
+		CreateTextBox({
+			Id = screen.Components[purchaseButtonKey].Id,
+			Text = descText,
+			FontSize = 16,
+			OffsetX = textOffsetX,
+			OffsetY = 15,
+			Color = { 0.8, 0.8, 0.8, 1 },
+			Font = "P22UndergroundSCMedium",
+			ShadowBlur = 0,
+			ShadowColor = { 0, 0, 0, 1 },
+			ShadowOffset = { 0, 2 },
+			Justification = "Center"
+		})
+
+		if iconAnimation then
+			local icon = {
+				Name = "BlankObstacle",
+				Animation = iconAnimation,
+				Scale = 0.35,
+				Group = "Combat_Menu_TraitTray",
+				ToDestroy = true
+			}
+			screen.Components[purchaseButtonKey .. "Icon"] = CreateScreenComponent(icon)
+			screen.Components[purchaseButtonKey].Icon = screen.Components[purchaseButtonKey .. "Icon"]
+			Attach({
+				Id = screen.Components[purchaseButtonKey .. "Icon"].Id,
+				DestinationId = screen.Components[purchaseButtonKey].Id,
+				OffsetX = -75,
+				OffsetY = -5
+			})
+		end
+	end
+end
+
+function mod.TriggerSaveState(screen, button)
+	mod.SaveState(button.SlotIndex)
+	mod.CloseStateSelector(screen)
+end
+
+function mod.TriggerLoadState(screen, button)
+	if not screen.isBossSelectMode then
+		mod.LoadState(nil, button.SlotIndex)
+		mod.CloseStateSelector(screen)
+	else
+		print("Pick state")
+		data.SelectedSavedStateSlot = button.SlotIndex
+		mod.CloseStateSelector(screen)
+		mod.DoBossHandling()
+	end
+end
+
+--#endregion
+
+--#endregion
+

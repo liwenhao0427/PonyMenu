@@ -155,6 +155,7 @@ function mod.setupScreenData()
 			Rarity = "Common",
 			RowStartX = -(ScreenCenterX * 0.65),
 			RowStartY = -(ScreenCenterY * 0.5),
+			BlockPause = true,
 			ComponentData =
 			{
 				DefaultGroup = "Combat_Menu_TraitTray_Backing",
@@ -367,6 +368,7 @@ function mod.setupScreenData()
 			Amount = 0,
 			RowStartX = -(ScreenCenterX * 0.65),
 			RowStartY = -(ScreenCenterY * 0.5),
+			BlockPause = true,
 			ComponentData =
 			{
 				DefaultGroup = "Combat_Menu_TraitTray_Backing",
@@ -645,49 +647,98 @@ function mod.setupScreenData()
 			Name = "BossSelector",
 			RowStartX = 200,
 			RowStartY = ScreenCenterY,
+			BlockPause = true,
 			IncrementX = 190,
 			ItemOrder = {
-				"F_Boss01",
-				"G_Boss01",
-				"H_Boss01",
-				"I_Boss01",
-				"N_Boss01",
-				"O_Boss01",
-				"P_Boss01",
-				"Q_Boss01"
+				Regular = {
+					"F_Boss01",
+					"G_Boss01",
+					"H_Boss01",
+					"I_Boss01",
+					"N_Boss01",
+					"O_Boss01",
+					"P_Boss01",
+					"Q_Boss01"
+				},
+				Rival = {
+					"F_Boss02",
+					"G_Boss02",
+					"H_Boss02",
+					"I_Boss02",
+					"N_Boss02",
+					"O_Boss02",
+					"P_Boss02",
+					"Q_Boss02"
+				}
 			},
 			BossData = {
-				F_Boss01 = {
-					Name = "Hecate_Full",
-					Portrait = "Codex_Portrait_Hecate",
+				Regular = {
+					F_Boss01 = {
+						Name = "Hecate_Full",
+						Portrait = "Codex_Portrait_Hecate",
+					},
+					G_Boss01 = {
+						Name = "Scylla_Full",
+						Portrait = "Codex_Portrait_Scylla",
+					},
+					H_Boss01 = {
+						Name = "InfestedCerberus_Named",
+						Portrait = "Codex_Portrait_Cerberus",
+					},
+					I_Boss01 = {
+						Name = "Chronos_Full",
+						Portrait = "Codex_Portrait_Chronos",
+					},
+					N_Boss01 = {
+						Name = "Cyclops_Full",
+						Portrait = "Codex_Portrait_Polyphemus",
+					},
+					O_Boss01 = {
+						Name = "Eris_Full",
+						Portrait = "Codex_Portrait_Eris",
+					},
+					P_Boss01 = {
+						Name = "Prometheus_Full",
+						Portrait = "Codex_Portrait_Prometheus",
+					},
+					Q_Boss01 = {
+						Name = "TyphonHead_Full",
+						Portrait = "Codex_Portrait_Typhon",
+					},
 				},
-				G_Boss01 = {
-					Name = "Scylla_Full",
-					Portrait = "Codex_Portrait_Scylla",
-				},
-				H_Boss01 = {
-					Name = "InfestedCerberus_Named",
-					Portrait = "Codex_Portrait_Cerberus",
-				},
-				I_Boss01 = {
-					Name = "Chronos_Full",
-					Portrait = "Codex_Portrait_Chronos",
-				},
-				N_Boss01 = {
-					Name = "Cyclops_Full",
-					Portrait = "Codex_Portrait_Polyphemus",
-				},
-				O_Boss01 = {
-					Name = "Eris_Full",
-					Portrait = "Codex_Portrait_Eris",
-				},
-				P_Boss01 = {
-					Name = "Prometheus_Full",
-					Portrait = "Codex_Portrait_Prometheus",
-				},
-				Q_Boss01 = {
-					Name = "TyphonHead_Full",
-					Portrait = "Codex_Portrait_Typhon",
+				Rival = {
+					F_Boss02 = {
+						Name = "Hecate_Full",
+						Portrait = "Codex_Portrait_Hecate",
+					},
+					G_Boss02 = {
+						Name = "Scylla_Full",
+						Portrait = "Codex_Portrait_Scylla",
+					},
+					H_Boss02 = {
+						Name = "InfestedCerberus_Named",
+						Portrait = "Codex_Portrait_Cerberus",
+					},
+					I_Boss02 = {
+						Name = "Chronos_Full",
+						Portrait = "Codex_Portrait_Chronos",
+					},
+					N_Boss02 = {
+						Name = "Cyclops_Full",
+						Portrait = "Codex_Portrait_Polyphemus",
+					},
+					O_Boss02 = {
+						Name = "Eris_Full",
+						Portrait = "Codex_Portrait_Eris",
+					},
+					P_Boss02 = {
+						Name = "Prometheus_Full",
+						Portrait = "Codex_Portrait_Prometheus",
+					},
+					Q_Boss02 = {
+						Name = "TyphonHead_Full",
+						Portrait = "Codex_Portrait_Typhon",
+					},
 				}
 			},
 			TitleText =
@@ -766,6 +817,7 @@ function mod.setupScreenData()
 			Name = "ConsumableSelector",
 			RowStartX = -(ScreenCenterX * 0.65),
 			RowStartY = -(ScreenCenterY * 0.5),
+			BlockPause = true,
 
 			ComponentData =
 			{
@@ -817,6 +869,72 @@ function mod.setupScreenData()
 							Data =
 							{
 								OnPressedFunctionName = _PLUGIN.guid .. '.' .. 'CloseConsumableSelector',
+								ControlHotkeys = { "Cancel", },
+							},
+						},
+					}
+				},
+			}
+		},
+
+		StateSelector = {
+			Components = {},
+			OpenSound = "/SFX/Menu Sounds/HadesLocationTextAppear",
+			Name = "StateSelector",
+			RowStartX = -(ScreenCenterX * 0.65),
+			RowStartY = -(ScreenCenterY * 0.35),
+			BlockPause = true,
+
+			ComponentData =
+			{
+				DefaultGroup = "Combat_Menu_TraitTray",
+				UseNativeScreenCenter = true,
+				Order = {
+					"BackgroundTint",
+					"Background"
+				},
+
+				BackgroundTint =
+				{
+					Graphic = "rectangle01",
+					GroupName = "Combat_Menu",
+					Scale = 10,
+					X = ScreenCenterX,
+					Y = ScreenCenterY,
+				},
+
+				Background =
+				{
+					Graphic = "Box_FullScreen",
+					GroupName = "Combat_Menu",
+					X = ScreenCenterX,
+					Y = ScreenCenterY,
+					Scale = 1.15,
+					Text = mod.Locale.SelectSlot,
+					TextArgs =
+					{
+						FontSize = 32,
+						Width = 750,
+						OffsetY = -(ScreenCenterY * 0.825),
+						Color = Color.White,
+						Font = "P22UndergroundSCHeavy",
+						ShadowBlur = 0,
+						ShadowColor = { 0, 0, 0, 0 },
+						ShadowOffset = { 0, 3 },
+					},
+
+					Children =
+					{
+						CloseButton =
+						{
+							Graphic = "ButtonClose",
+							GroupName = "Combat_Menu_TraitTray",
+							Scale = 0.7,
+							OffsetX = 0,
+							OffsetY = ScreenCenterY - 70,
+							Data =
+							{
+								OnPressedFunctionName = _PLUGIN.guid .. '.' .. 'CloseStateSelector',
 								ControlHotkeys = { "Cancel", },
 							},
 						},
@@ -1056,7 +1174,7 @@ mod.CommandData = {
 		Name = mod.Locale.SaveStateTitle,
 		Description = mod.Locale.SaveStateDescription,
 		Type = "Command",
-		Function = _PLUGIN.guid .. '.' .. 'SaveState'
+		Function = _PLUGIN.guid .. '.' .. 'OpenStateSelectorSave'
 	},
 	{
 		IconPath = "GUI\\Shell\\CloudSuccess",
@@ -1064,7 +1182,7 @@ mod.CommandData = {
 		Name = mod.Locale.LoadStateTitle,
 		Description = mod.Locale.LoadStateDescription,
 		Type = "Command",
-		Function = _PLUGIN.guid .. '.' .. 'LoadState'
+		Function = _PLUGIN.guid .. '.' .. 'OpenStateSelectorLoad'
 	},
 }
 

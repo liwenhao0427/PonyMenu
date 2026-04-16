@@ -103,4 +103,6 @@ public.AddLocale("en", {
 	AxeOmegaSpinCount = "Axe Ω Spin Count (20)",
 	GuaranteedZagContract = "Guaranteed Zagreus Contract",
 
+	SelectSlot = "Select Slot",
+	EmptySlot = "Empty",
 })

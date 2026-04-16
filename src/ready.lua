@@ -21,6 +21,15 @@ ModUtil.LoadOnce(function()
 		rom.game.GameState.PonyMenu = { Data = {} }
 	end
 	data = rom.game.GameState.PonyMenu.Data
+
+	if data.SavedState ~= nil and data.SavedStates == nil then
+		data.SavedStates = {}
+		data.SavedStates[1] = data.SavedState
+		data.SavedState = nil
+	end
+	if data.SavedStates == nil then
+		data.SavedStates = {}
+	end
 end)
 
 function mod.GetLanguageString(path)
@@ -201,7 +210,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 		for i, resourceName in ipairs( category ) do
 
 			local resourceData = ResourceData[resourceName]
-			if CanShowResourceInInventory( resourceData ) then
+			if CanShowResourceInInventory( resourceData, screen.Args ) then
 
 				local textLines = nil
 				local canBeGifted = false
@@ -560,15 +569,19 @@ function mod.GetLootColorFromTrait(traitName)
 end
 
 function mod.RemoveAllTraits()
-	for i, traitData in pairs(CurrentRun.Hero.Traits) do
-		RemoveTrait(CurrentRun.Hero, traitData.Name)	
+	-- deep copy table since Hero.Traits table is modified during deletion
+	local traitCopy = game.DeepCopyTable(CurrentRun.Hero.Traits)
+	for i, traitData in pairs(traitCopy) do
+		RemoveTrait(CurrentRun.Hero, traitData.Name)
 	end
 end
 
 function mod.RemoveAllBoons()
-	for i, traitData in pairs(CurrentRun.Hero.Traits) do
-		-- Only remove boons
-		if traitData.RarityLevels ~= nil and traitData.Slot ~= "Keepsake" and traitData.Slot ~= "Aspect" and traitData.UpgradeResourceCost == nil then
+	-- deep copy table since Hero.Traits table is modified during deletion
+	local traitCopy = game.DeepCopyTable(CurrentRun.Hero.Traits)
+	for i, traitData in pairs(traitCopy) do
+		-- Only remove boons, if it can be in boon manager it can be deleted
+		if mod.IsBoonManagerValid(traitData.Name) then
 			RemoveTrait(CurrentRun.Hero, traitData.Name)
 		end
 	end
@@ -647,7 +660,8 @@ function CreateNewCustomRun(room)
 	-- EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = GameState.EquippedFamiliar, SkipNewTraitHighlight = true })
 	-- EquipWeaponUpgrade(CurrentRun.Hero, { SkipNewTraitHighlight = true })
 	-- EquipMetaUpgrades(CurrentRun.Hero, { SkipNewTraitHighlight = true })
-	mod.LoadState(true)
+	InitHeroLastStands(CurrentRun.Hero)
+	mod.LoadState(true, data.SelectedSavedStateSlot)
 	UpdateRunHistoryCache(CurrentRun)
 
 	CurrentRun.BonusUnusedWeaponName = GetRandomUnequippedWeapon()
@@ -661,8 +675,6 @@ function CreateNewCustomRun(room)
 	if ConfigOptionCache.EasyMode then
 		CurrentRun.EasyModeLevel = GameState.EasyModeLevel
 	end
-
-	InitHeroLastStands(CurrentRun.Hero)
 
 	InitializeRewardStores(CurrentRun)
 	--SelectBannedEliteAttributes( CurrentRun )
@@ -701,6 +713,7 @@ function StartNewCustomRun(room)
 
 	HideCombatUI("StartOver")
 	currentRun = CreateNewCustomRun(room)
+
 	StopMusicianMusic({ Duration = 1.0 })
 	ResetObjectives()
 
@@ -719,7 +732,10 @@ function StartNewCustomRun(room)
 	AddInputBlock({ Name = "MapLoad" })
 	AddTimerBlock( CurrentRun, "MapLoad" )
 
+
+
 	LoadMap({ Name = currentRun.CurrentRoom.Name, ResetBinks = true })
+
 end
 
 function mod.KillPlayer()
@@ -727,12 +743,14 @@ function mod.KillPlayer()
 	Kill(CurrentRun.Hero)
 end
 
-function mod.SaveState()
+function mod.SaveState(slotIndex)
+	slotIndex = slotIndex or 1
 	if CurrentRun.Hero.Traits ~= nil then
 		local wp = GetEquippedWeapon()
 		local aspect = GameState.LastWeaponUpgradeName[wp]
 		local aspectLevel = GetWeaponUpgradeLevel(aspect)
-		data.SavedState = {
+		
+		data.SavedStates[slotIndex] = {
 			Traits = {},
 			MetaUpgrades = {},
 			Weapon = wp,
@@ -740,30 +758,38 @@ function mod.SaveState()
 			Keepsake = GameState.LastAwardTrait,
 			Assist = GameState.LastAssistTrait,
 			Familiar = GameState.EquippedFamiliar,
-			Hex = nil
+			Hex = nil,
+			LastStands = nil
 		}
+		
 		for i, traitData in pairs(CurrentRun.Hero.Traits) do
-			if
+			if traitData.Slot and traitData.Slot == "Familiar" then
+				-- Skip, familiar is handled separately
+			elseif traitData.Slot and traitData.Slot == "Spell" then
+				-- Skip, Hex is handled separately
+			elseif
 				not traitData.MetaUpgrade
-				and traitData.Name ~= data.SavedState.Weapon
-				and traitData.Name ~= data.SavedState.Aspect.Name
-				and traitData.Name ~= data.SavedState.Keepsake
-				and traitData.Name ~= data.SavedState.Assist
-				and traitData.Name ~= data.SavedState.Familiar
+				and traitData.Name ~= data.SavedStates[slotIndex].Weapon
+				and traitData.Name ~= data.SavedStates[slotIndex].Aspect.Name
+				and traitData.Name ~= data.SavedStates[slotIndex].Keepsake
+				and traitData.Name ~= data.SavedStates[slotIndex].Assist
 			then
-				if traitData.Slot and traitData.Slot == "Spell" then
-					data.SavedState.Hex = traitData.Name
-				else
-					table.insert(data.SavedState.Traits, { Name = traitData.Name, Rarity = traitData.Rarity, StackNum = traitData.StackNum })
-				end
+				table.insert(data.SavedStates[slotIndex].Traits, { Name = traitData.Name, Rarity = traitData.Rarity, StackNum = traitData.StackNum })
 			elseif traitData.MetaUpgrade then
-				table.insert(data.SavedState.MetaUpgrades, {
+				table.insert(data.SavedStates[slotIndex].MetaUpgrades, {
 					TraitName = traitData.Name,
 					Rarity = traitData.Rarity,
 					CustomMultiplier = traitData.CustomMultiplier,
 					SourceName = traitData.Name
 				})
 			end
+		end
+
+		if CurrentRun.Hero.SlottedSpell ~= nil then
+			data.SavedStates[slotIndex].Hex = DeepCopyTable(CurrentRun.Hero.SlottedSpell)
+		end
+		if CurrentRun.Hero.LastStands ~= nil then
+			data.SavedStates[slotIndex].LastStands = DeepCopyTable(CurrentRun.Hero.LastStands)
 		end
 		SaveCheckpoint({ DevSaveName = CreateDevSaveName(CurrentRun) })
 		PlaySound({ Name = "/SFX/WrathEndingWarning", Id = CurrentRun.Hero.ObjectId })
@@ -779,36 +805,40 @@ function mod.SaveState()
 	end
 end
 
-function mod.LoadState(newRun)
-	if data.SavedState ~= nil then
-		if newRun == nil then
-			mod.RemoveAllTraits()
-			ClearUpgrades()
-		end
+function mod.LoadState(newRun, slotIndex)
+	slotIndex = slotIndex or 1
+	local stateData = data.SavedStates[slotIndex]
+	
+	if newRun == nil then
+		mod.RemoveAllTraits()
+		ClearUpgrades()
+	end
+	
+	if stateData ~= nil and stateData.Weapon ~= nil then
 		if GameState.LastAwardTrait == "ReincarnationKeepsake" then
 			RemoveLastStand(CurrentRun.Hero, "ReincarnationKeepsake")
 			CurrentRun.Hero.MaxLastStands = CurrentRun.Hero.MaxLastStands - 1
 		end
-		EquipPlayerWeapon(WeaponData[data.SavedState.Weapon], { LoadPackages = true })
-		if data.SavedState.Keepsake ~= nil then
-			EquipKeepsake(CurrentRun.Hero, data.SavedState.Keepsake, { FromLoot = true, SkipNewTraitHighlight = true })
+		EquipPlayerWeapon(WeaponData[stateData.Weapon], { LoadPackages = true })
+		if stateData.Keepsake ~= nil then
+			EquipKeepsake(CurrentRun.Hero, stateData.Keepsake, { FromLoot = true, SkipNewTraitHighlight = true })
 		end
-		if data.SavedState.Assist ~= nil then
-			EquipAssist(CurrentRun.Hero, data.SavedState.Assist, { SkipNewTraitHighlight = true })
+		if stateData.Assist ~= nil then
+			EquipAssist(CurrentRun.Hero, stateData.Assist, { SkipNewTraitHighlight = true })
 		end
-		if data.SavedState.Familiar ~= nil then
-			EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = data.SavedState.Familiar, SkipNewTraitHighlight = true })
+		if stateData.Familiar ~= nil then
+			EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = stateData.Familiar, SkipNewTraitHighlight = true })
 		end
-		if data.SavedState.Aspect.Name ~= nil then
+		if stateData.Aspect.Name ~= nil then
 			AddTraitToHero({
-				TraitName = data.SavedState.Aspect.Name,
-				Rarity = data.SavedState.Aspect.Rarity,
+				TraitName = stateData.Aspect.Name,
+				Rarity = stateData.Aspect.Rarity,
 				SkipNewTraitHighlight = true,
 				SkipQuestStatusCheck = true,
 				SkipActivatedTraitUpdate = true,
 			})
 		end
-		for _, traitData in pairs(data.SavedState.Traits) do
+		for _, traitData in pairs(stateData.Traits) do
 			AddTraitToHero({
 				TraitData = GetProcessedTraitData({
 					Unit = CurrentRun.Hero,
@@ -821,17 +851,31 @@ function mod.LoadState(newRun)
 				SkipActivatedTraitUpdate = true,
 			})
 		end
-		if data.SavedState.Hex ~= nil then
-			AddTraitToHero({
-				TraitName = data.SavedState.Hex,
-				SkipNewTraitHighlight = true,
-				SkipQuestStatusCheck = true,
-				SkipActivatedTraitUpdate = true,
-			})
-			-- CurrentRun.Hero.SlottedSpell = DeepCopyTable(SpellData[data.SavedState.Hex])
-			-- CurrentRun.Hero.SlottedSpell.Talents = DeepCopyTable(CreateTalentTree(SpellData[data.SavedState.Hex]))
+		if stateData.Hex ~= nil then
+			if type(stateData.Hex) == "table" then
+				AddTraitToHero({
+					TraitName = stateData.Hex.TraitName,
+					SkipNewTraitHighlight = true,
+					SkipQuestStatusCheck = true,
+					SkipActivatedTraitUpdate = true,
+				})
+				CurrentRun.Hero.SlottedSpell = DeepCopyTable(stateData.Hex)
+			else
+				AddTraitToHero({
+					TraitName = stateData.Hex,
+					SkipNewTraitHighlight = true,
+					SkipQuestStatusCheck = true,
+					SkipActivatedTraitUpdate = true,
+				})
+				local spellName = stateData.Hex:gsub("Trait", "")
+				spellName = spellName:gsub("Spell", "")
+				if SpellData[spellName] then
+					CurrentRun.Hero.SlottedSpell = DeepCopyTable(SpellData[spellName])
+					CurrentRun.Hero.SlottedSpell.Talents = DeepCopyTable(CreateTalentTree(SpellData[spellName]))
+				end
+			end
 		end
-		for _, traitData in pairs(data.SavedState.MetaUpgrades) do
+		for _, traitData in pairs(stateData.MetaUpgrades) do
 			AddTraitToHero({
 				SkipNewTraitHighlight = true,
 				SkipQuestStatusCheck = true,
@@ -842,18 +886,28 @@ function mod.LoadState(newRun)
 				SourceName = traitData.SourceName,
 			})
 		end
-		if newRun == nil then
-			PlaySound({ Name = "/SFX/WrathEndingWarning", Id = CurrentRun.Hero.ObjectId })
-			thread(InCombatTextArgs,
-				{
-					TargetId = CurrentRun.Hero.ObjectId,
-					Text = mod.Locale.SaveStateLoaded,
-					SkipRise = false,
-					SkipFlash = false,
-					Duration = 1.5,
-					ShadowScaleX = 1.5,
-				})
+		
+		if stateData.LastStands ~= nil then
+			CurrentRun.Hero.LastStands = DeepCopyTable(stateData.LastStands)
+		else
+			InitHeroLastStands(CurrentRun.Hero)
 		end
+		if UpdateLifePips then
+			UpdateLifePips(CurrentRun.Hero)
+		end
+	end
+	
+	if newRun == nil then
+		PlaySound({ Name = "/SFX/WrathEndingWarning", Id = CurrentRun.Hero.ObjectId })
+		thread(InCombatTextArgs,
+			{
+				TargetId = CurrentRun.Hero.ObjectId,
+				Text = mod.Locale.SaveStateLoaded,
+				SkipRise = false,
+				SkipFlash = false,
+				Duration = 1.5,
+				ShadowScaleX = 1.5,
+			})
 	end
 end
 

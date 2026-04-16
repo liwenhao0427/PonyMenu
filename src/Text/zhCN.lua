@@ -102,4 +102,7 @@ public.AddLocale("zh-CN", {
     LobMaxAmmo = "头颅弹药上限20",
 	AxeOmegaSpinCount = "斧Ω攻击转圈次数20",
 	GuaranteedZagContract = "扎格列欧斯挑战入口100%",
+
+	SelectSlot = "选择套装",
+	EmptySlot = "空",
 })
