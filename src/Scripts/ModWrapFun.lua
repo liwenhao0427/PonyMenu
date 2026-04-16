@@ -292,7 +292,7 @@ end)
 ModUtil.Path.Wrap("SpendResource", function(base, name, amount, source, args)
     if mod.flags.FreeToBuy then
         -- 免费：amount 强制为 0
-        return base(name, 0, source, args)
+        return base(name, 0, source, args or {})
     else
         return base(name, amount, source, args)
     end
@@ -300,8 +300,8 @@ end)
 
 ModUtil.Path.Wrap("SpendResources", function(base, resourceCosts, source, args)
     if mod.flags.FreeToBuy then
-        -- 忽略 resourceCosts
-        return base(nil, source, args)
+        -- 保留参数结构，交给 SpendResource 包装器将花费压成 0
+        return base(resourceCosts or {}, source, args or {})
     else
         return base(resourceCosts, source, args)
     end

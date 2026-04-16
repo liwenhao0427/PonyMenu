@@ -199,8 +199,14 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 		return
 	end
 
-	if screen.Args.PlantTarget ~= nil and GameState.WorldUpgrades.WorldUpgradeGardenMultiPlant then
-		components.PinButton.OnPressedFunctionName = "GardenMultiPlantSeed"
+	local initialSelection = nil
+	if screen.Args.PlantTarget ~= nil then
+		if GameState.WorldUpgrades.WorldUpgradeGardenMultiPlant then
+			components.PinButton.OnPressedFunctionName = "GardenMultiPlantSeed"
+		end
+		if GameState.GardenLastSeedPlanted ~= nil and HasResource( GameState.GardenLastSeedPlanted, 1 ) then
+			initialSelection = GameState.GardenLastSeedPlanted
+		end
 	end
 
 	local resourceLocation = { X = screen.GridStartX, Y = screen.GridStartY }
@@ -215,6 +221,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 				local textLines = nil
 				local canBeGifted = false
 				local canBePlanted = false
+				local spending = nil
 				if screen.Args.PlantTarget ~= nil then
 					if GardenData.Seeds[resourceName] then
 						canBePlanted = true
@@ -223,21 +230,22 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 					if screen.Args.GiftTarget.UnlimitedGifts ~= nil and screen.Args.GiftTarget.UnlimitedGifts[resourceName] then
 						canBeGifted = true
 					else
-						local spending = {}
+						spending = {}
 						spending[resourceName] = 1
 						textLines = GetRandomEligibleTextLines( screen.Args.GiftTarget, screen.Args.GiftTarget.GiftTextLineSets, GetNarrativeDataValue( screen.Args.GiftTarget, "GiftTextLinePriorities" ), { Spending = spending } )
 						if textLines ~= nil then
 							canBeGifted = true
+							spending = textLines.Cost
 						end
 					end
 				end
 
-				local alpha = nil
-				local alphaTarget = nil
-				local alphaTargetDuration = nil
+				local alphaTarget = 1.0
+				local alphaTargetDuration = 0.2
+				if not HasResource( resourceName, 1 ) then
+					alphaTarget = screen.NoResourceIconAlpha
+				end
 				if args.FirstOpen then
-					alpha = 0.0
-					alphaTarget = 1.0
 					alphaTargetDuration	= 0.6
 				end
 				local button = CreateScreenComponent({ Name = "ButtonInventoryItem",
@@ -247,8 +255,8 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 					X = resourceLocation.X,
 					Y = resourceLocation.Y,
 					Alpha = 0.0,
-					AlphaTarget = 1.0,
-					AlphaTargetDuration	= 0.6,
+					AlphaTarget = alphaTarget,
+					AlphaTargetDuration	= alphaTargetDuration,
 				})
 				
 				button.Screen = screen
@@ -262,7 +270,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 					Y = resourceLocation.Y,
 					Alpha = 0.0,
 					AlphaTarget = 1.0,
-					AlphaTargetDuration	= 0.6,
+					AlphaTargetDuration	= alphaTargetDuration,
 				})
 				components[resourceName.."Highlight"] = buttonHighlight
 				button.Highlight = buttonHighlight
@@ -271,6 +279,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 					if HasResource( resourceName, 1 ) then
 						button.ContextualAction = "Menu_Plant"
 						button.OnPressedFunctionName = "GardenPlantSeed"
+						initialSelection = initialSelection or resourceName
 
 						if GameState.WorldUpgrades.WorldUpgradeGardenMultiPlant then
 							local numEmptyPlots = 0
@@ -305,23 +314,24 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 							end
 						end
 					else
-						SetColor({ Id = button.Id, Color = Color.Black })
+						SetRGB({ Id = button.Id, Color = Color.Black })
 						button.MouseOverText = "InventoryScreen_SeedNotAvailable"
 					end
 				elseif canBeGifted then
-					if HasResource( resourceName, 1 ) then
+					if HasResources( spending ) then
 						button.ContextualAction = "Menu_Gift"
 						button.OnPressedFunctionName = "GiveSelectedGift"
 						button.TextLines = textLines
+						initialSelection = initialSelection or resourceName
 					else
-						SetColor({ Id = button.Id, Color = Color.Black })
+						SetRGB({ Id = button.Id, Color = Color.Black })
 						button.MouseOverText = "InventoryScreen_GiftNotAvailable"
 					end				
 				elseif screen.Args.PlantTarget ~= nil then
-					SetColor({ Id = button.Id, Color = Color.Black })
+					SetRGB({ Id = button.Id, Color = Color.Black })
 					button.MouseOverText = "InventoryScreen_SeedNotWanted"
 				elseif screen.Args.GiftTarget ~= nil then
-					SetColor({ Id = button.Id, Color = Color.Black })
+					SetRGB({ Id = button.Id, Color = Color.Black })
 					button.MouseOverText = "InventoryScreen_GiftNotWanted"
 				end
 
@@ -334,7 +344,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 				button.Viewable = not screen.Args.CategoryLocked or button.OnPressedFunctionName ~= nil
 				if button.Viewable then
 					-- highlight the initial selection, or the last resource you collected
-					if resourceName == args.InitialSelection then
+					if resourceName == initialSelection then
 						screen.CursorStartX = resourceLocation.X
 						screen.CursorStartY = resourceLocation.Y
 					elseif resourceName == GameState.UnviewedLastResourceGained then

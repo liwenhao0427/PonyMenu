@@ -627,14 +627,14 @@ function patchSpendResource( fun )
     function newFun(name, amount, source, args)
         -- return true
         -- 父函数，照常执行
-        fun(name, 0, source, args)
+        fun(name, 0, source, args or {})
     end
     return newFun
 end
 function patchSpendResources( fun )
     function newFun(resourceCosts, source, args )
         -- 父函数，照常执行
-        fun(nil, source, args )
+        fun(resourceCosts or {}, source, args or {} )
     end
     return newFun
 end
