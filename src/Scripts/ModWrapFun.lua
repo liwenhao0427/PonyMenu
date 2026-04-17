@@ -1,3 +1,7 @@
+local mod = PonyMenu
+
+if not mod.Config.Enabled then return end
+
 function debugShowText( text )
     thread( InCombatText, CurrentRun.Hero.ObjectId, text, 0.8, { SkipShadow = true } )
 end

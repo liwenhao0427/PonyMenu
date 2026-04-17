@@ -69,6 +69,7 @@ end
 -- Is it possible this could be done with ModUtil.Path.Context.Wrap?
 ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categoryIndex, args)
 	args = args or {}
+	screen.Args = screen.Args or {}
 	local components = screen.Components
 
 	-- Cleanup prev category
@@ -168,7 +169,7 @@ ModUtil.Path.Override("InventoryScreenDisplayCategory", function(screen, categor
 		for i, resourceName in ipairs( category ) do
 
 			local resourceData = ResourceData[resourceName]
-			if CanShowResourceInInventory( resourceData ) then
+			if CanShowResourceInInventory( resourceData, screen.Args ) then
 
 				local textLines = nil
 				local canBeGifted = false

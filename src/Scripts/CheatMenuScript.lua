@@ -1,3 +1,6 @@
+local mod = PonyMenu
+
+if not mod.Config.Enabled then return end
 
 mod.flags = { }
 
@@ -339,6 +342,9 @@ end
 
 -- 辅助函数：深拷贝表，确保恢复默认配置时不修改原始数据
 function DeepCopyTable(orig)
+    if orig == nil then
+        return nil
+    end
     local copy = {}
     for k, v in pairs(orig) do
         if type(v) == "table" then
