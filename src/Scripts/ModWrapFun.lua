@@ -7,6 +7,22 @@ function warningShowTest(text)
     thread( InCombatTextArgs, { TargetId = CurrentRun.Hero.ObjectId, Text = text, Duration = 1.0, ShadowScaleX = 0.7 } )
 end
 
+local RefreshableNpcBoonSources = {
+    NPC_Arachne_01 = true,
+    NPC_Circe_01 = true,
+    NPC_Echo_01 = true,
+    NPC_Icarus_01 = true,
+    NPC_Medea_01 = true,
+    NPC_Narcissus_01 = true,
+}
+
+ModUtil.Path.Wrap("OpenUpgradeChoiceMenu", function(base, source, args)
+    if source ~= nil and RefreshableNpcBoonSources[source.Name] then
+        source.BlockReroll = false
+    end
+    return base(source, args)
+end)
+
 --ChaosGate = "混沌之门",
 ModUtil.Path.Wrap("IsSecretDoorEligible", function(base, currentRun, currentRoom)
     if mod.flags["ChaosGate"] then
