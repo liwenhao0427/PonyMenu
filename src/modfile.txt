@@ -1,0 +1,19 @@
+Top Import register.lua
+Top Import config.lua
+Top Import init.lua
+Import Text/en.lua
+Import Text/fr.lua
+Import Text/ptBR.lua
+Import Text/zhCN.lua
+Import Text/zhTW.lua
+
+Import core.lua
+Import Scripts/MenuScripts.lua
+Import Scripts/ModWrapFun.lua
+Import Scripts/CheatInfo.lua
+Import Scripts/CheatMenuScript.lua
+Import Data/ScreenData.lua
+
+
+To Scripts/ResourceData.lua
+Import Data/ResourceData.lua

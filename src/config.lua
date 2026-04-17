@@ -1,4 +1,6 @@
-return {
+local config = {
 	Enabled = true,
-	ColorblindMode = true
+	ColorblindMode = false,
 }
+PonyMenu.Config = config
+return config
